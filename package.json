@@ -1,0 +1,17 @@
+{
+  "name": "savora",
+  "version": "1.0.0",
+  "description": "Savora - Premium Food Delivery Platform with BPM & ERD Showcase",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node server.js"
+  },
+  "keywords": ["food-delivery", "bpm", "erd", "nodejs", "express"],
+  "author": "Savora Technologies",
+  "license": "MIT",
+  "dependencies": {
+    "cors": "^2.8.5",
+    "express": "^4.18.2"
+  }
+}

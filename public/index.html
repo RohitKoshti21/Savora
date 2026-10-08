@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Savora - Order food online from the best restaurants near you. Fast delivery, great food, unbeatable prices.">
+  <title>Savora – Delicious Food Delivered Fast</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🍔</text></svg>">
+  <link rel="stylesheet" href="styles.css">
+  <script
+    async
+    crossorigin="anonymous"
+    data-clerk-publishable-key="pk_test_dG9wLXN0YWxsaW9uLTc4MjAuY2xlcmsuYWNjb3VudHMuZGV2JA"
+    src="https://cdn.jsdelivr.net/npm/@clerk/clerk-js@5/dist/clerk.browser.js"
+  ></script>
+</head>
+<body>
+
+<!-- ==================== NAVBAR ==================== -->
+<nav class="navbar" id="navbar">
+  <div class="nav-logo" onclick="navigateTo('home')" style="display: flex; align-items: center;">
+    <img src="logo.jpg" alt="Savora Logo" style="height: 32px; width: auto; border-radius: 4px; margin-right: 8px;"> Savora
+  </div>
+
+  <ul class="nav-links">
+    <li><a href="#" onclick="navigateTo('home')" id="nav-home" class="active">Home</a></li>
+    <li><a href="#" onclick="navigateTo('restaurants')" id="nav-restaurants">Restaurants</a></li>
+    <li><a href="#" onclick="navigateTo('orders')" id="nav-orders">My Orders</a></li>
+    <li><a href="bpm.html" id="nav-bpm">BPM &amp; ERD</a></li>
+  </ul>
+
+  <div class="nav-actions">
+    <button class="btn-icon" onclick="Theme.toggle()" title="Toggle Theme" id="theme-btn">
+      <span id="theme-icon">🌙</span>
+    </button>
+    <button class="btn-icon" onclick="openCart()" title="Cart" id="cart-btn">
+      🛒
+      <span class="cart-badge" id="cart-badge">0</span>
+    </button>
+    <div id="clerk-user-button"></div>
+  </div>
+</nav>
+
+<!-- ==================== TOAST CONTAINER ==================== -->
+<div class="toast-container" id="toast-container"></div>
+
+<!-- ==================== PAGES ==================== -->
+
+<!-- HOME PAGE -->
+<div class="page active" id="page-home">
+
+  <!-- Hero -->
+  <section class="hero">
+    <div class="hero-content">
+      <div class="hero-badge">
+        <span>⚡</span> 30-Minute Delivery Guaranteed
+      </div>
+      <h1 class="hero-title">
+        Craving Something <span class="hero-title-gradient">Amazing?</span>
+      </h1>
+      <p class="hero-subtitle">
+        Order from 500+ top-rated restaurants. Fresh food, lightning-fast delivery — right to your door.
+      </p>
+      <div class="hero-search">
+        <input class="hero-search-input" id="hero-search" type="text" placeholder="Search for food, restaurants or cuisine...">
+        <button class="btn btn-primary hero-search-btn" onclick="doHeroSearch()">🔍 Search</button>
+      </div>
+      <div class="hero-stats">
+        <div>
+          <div class="hero-stat-value">500+</div>
+          <div class="hero-stat-label">Restaurants</div>
+        </div>
+        <div>
+          <div class="hero-stat-value">50K+</div>
+          <div class="hero-stat-label">Happy Customers</div>
+        </div>
+        <div>
+          <div class="hero-stat-value">30 min</div>
+          <div class="hero-stat-label">Avg. Delivery</div>
+        </div>
+        <div>
+          <div class="hero-stat-value">4.8★</div>
+          <div class="hero-stat-label">App Rating</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="hero-image-wrap">
+      <img class="hero-image" src="https://images.unsplash.com/photo-1565299507177-b0ac66763828?w=700&q=85" alt="Delicious food spread">
+    </div>
+  </section>
+
+  <!-- Categories -->
+  <section class="section">
+    <div class="section-header">
+      <div>
+        <h2 class="section-title">🍽️ What are you craving?</h2>
+        <p class="section-subtitle">Explore cuisines from around the world</p>
+      </div>
+    </div>
+    <div class="filter-chips" id="cuisine-chips">
+      <!-- Populated by JS -->
+    </div>
+    <div class="section-header" style="margin-top: 32px;">
+      <div>
+        <h2 class="section-title">🔥 Top Restaurants Near You</h2>
+        <p class="section-subtitle" id="restaurant-count">Showing all restaurants</p>
+      </div>
+      <div class="search-container">
+        <input class="search-input" id="restaurant-search" type="text" placeholder="Search restaurants..." oninput="filterRestaurants()">
+        <span class="search-icon">🔍</span>
+      </div>
+    </div>
+    <div id="restaurant-grid-home" class="restaurant-grid">
+      <div class="loader"></div>
+    </div>
+  </section>
+
+  <!-- Features Section -->
+  <section style="padding: 60px max(20px,5vw); background: var(--bg-surface);">
+    <div style="max-width: 1280px; margin: 0 auto;">
+      <h2 style="text-align:center; margin-bottom: 48px;">Why <span style="background: linear-gradient(135deg,#FF4500,#FF8C00); -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text;">Savora?</span></h2>
+      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 24px;">
+        <div class="card" style="padding: 28px; text-align: center;">
+          <div style="font-size: 2.5rem; margin-bottom: 16px;">⚡</div>
+          <h3 style="margin-bottom: 8px;">Lightning Fast</h3>
+          <p style="font-size: 0.88rem;">Average 28-minute delivery time with real-time tracking</p>
+        </div>
+        <div class="card" style="padding: 28px; text-align: center;">
+          <div style="font-size: 2.5rem; margin-bottom: 16px;">🛡️</div>
+          <h3 style="margin-bottom: 8px;">Safe &amp; Hygienic</h3>
+          <p style="font-size: 0.88rem;">Contactless delivery and tamper-proof packaging guaranteed</p>
+        </div>
+        <div class="card" style="padding: 28px; text-align: center;">
+          <div style="font-size: 2.5rem; margin-bottom: 16px;">💎</div>
+          <h3 style="margin-bottom: 8px;">Premium Quality</h3>
+          <p style="font-size: 0.88rem;">Curated restaurants with strict quality standards and ratings</p>
+        </div>
+        <div class="card" style="padding: 28px; text-align: center;">
+          <div style="font-size: 2.5rem; margin-bottom: 16px;">💰</div>
+          <h3 style="margin-bottom: 8px;">Best Prices</h3>
+          <p style="font-size: 0.88rem;">Exclusive deals, FoodCoins rewards and daily offers</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer>
+    <div class="footer-grid">
+      <div>
+        <div class="footer-brand" style="display: flex; align-items: center; justify-content: center;"><img src="logo.jpg" alt="Savora Logo" style="height: 32px; width: auto; border-radius: 4px; margin-right: 8px;"> Savora</div>
+        <p class="footer-desc">India's most loved food delivery platform. Order from your favorite restaurants and get food delivered in record time.</p>
+      </div>
+      <div>
+        <div class="footer-heading">Company</div>
+        <ul class="footer-links">
+          <li><a href="#">About Us</a></li>
+          <li><a href="#">Careers</a></li>
+          <li><a href="#">Blog</a></li>
+          <li><a href="#">Press</a></li>
+        </ul>
+      </div>
+      <div>
+        <div class="footer-heading">For You</div>
+        <ul class="footer-links">
+          <li><a href="#">Offers</a></li>
+          <li><a href="#">FoodCoins</a></li>
+          <li><a href="#">Help Center</a></li>
+          <li><a href="#">Gift Cards</a></li>
+        </ul>
+      </div>
+      <div>
+        <div class="footer-heading">Partners</div>
+        <ul class="footer-links">
+          <li><a href="#">Add Restaurant</a></li>
+          <li><a href="#">Deliver with Us</a></li>
+          <li><a href="bpm.html">BPM &amp; ERD</a></li>
+          <li><a href="#">API</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <p>© 2024 Savora Technologies Pvt. Ltd. · Privacy Policy · Terms of Service</p>
+    </div>
+  </footer>
+
+</div>
+
+<!-- RESTAURANTS PAGE -->
+<div class="page" id="page-restaurants">
+  <div style="padding-top: 90px;">
+    <div class="section">
+      <h1 style="margin-bottom: 8px;">All Restaurants</h1>
+      <p style="color: var(--text-muted); margin-bottom: 28px;">Explore all available restaurants in your area</p>
+      <div class="filter-chips" id="cuisine-chips-2"></div>
+      <div style="display: flex; gap: 16px; margin-bottom: 28px; flex-wrap: wrap; align-items: center; justify-content: space-between;">
+        <div class="search-container" style="max-width: 400px; flex: 1;">
+          <input class="search-input" id="restaurant-search-2" type="text" placeholder="Search..." oninput="filterRestaurants()">
+          <span class="search-icon">🔍</span>
+        </div>
+        <p id="restaurant-count-2" style="color: var(--text-muted); font-size: 0.9rem;"></p>
+      </div>
+      <div id="restaurant-grid-2" class="restaurant-grid">
+        <div class="loader"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- MENU PAGE -->
+<div class="page" id="page-menu">
+  <div class="menu-page">
+    <div class="menu-hero" id="menu-hero">
+      <img id="menu-hero-img" src="" alt="" class="menu-hero-img">
+      <div class="menu-hero-overlay">
+        <div class="menu-hero-content">
+          <h1 class="menu-hero-title" id="menu-restaurant-name">Restaurant Name</h1>
+          <div class="menu-hero-meta" id="menu-restaurant-meta">
+            <!-- Populated by JS -->
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="menu-layout">
+      <div id="menu-items-container">
+        <div class="loader"></div>
+      </div>
+      <div>
+        <div class="cart-sidebar" id="cart-sidebar-menu">
+          <div class="cart-header">
+            <span class="cart-title">🛒 Your Cart</span>
+            <button onclick="clearCart()" style="font-size: 0.75rem; color: var(--text-muted); background: none; border: none; cursor: pointer;">Clear</button>
+          </div>
+          <div class="cart-items" id="cart-items-list">
+            <div class="empty-cart">
+              <div class="empty-cart-icon">🛒</div>
+              <p>Your cart is empty</p>
+              <p style="font-size: 0.82rem; margin-top: 4px;">Add items to get started</p>
+            </div>
+          </div>
+          <div class="cart-footer" id="cart-footer" style="display:none;">
+            <div class="cart-total-row"><span>Subtotal</span><span id="cart-subtotal">₹0</span></div>
+            <div class="cart-total-row"><span>Delivery Fee</span><span id="cart-delivery-fee">₹30</span></div>
+            <div class="cart-total-row"><span>Taxes (5%)</span><span id="cart-tax">₹0</span></div>
+            <div class="cart-total-row grand"><span>Total</span><span id="cart-grand-total">₹0</span></div>
+            <button class="btn btn-primary" style="width: 100%; margin-top: 16px;" onclick="placeOrder()" id="place-order-btn">Place Order 🚀</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ORDER TRACKING PAGE -->
+<div class="page" id="page-tracking">
+  <div class="tracking-page">
+    <button onclick="navigateTo('orders')" style="display:flex; align-items:center; gap:8px; background:none; border:none; color:var(--text-secondary); cursor:pointer; margin-bottom:24px; font-size:0.9rem; font-weight:600;">
+      ← Back to Orders
+    </button>
+    <div class="card tracking-card" id="tracking-card">
+      <div class="loader"></div>
+    </div>
+  </div>
+</div>
+
+<!-- ORDERS PAGE -->
+<div class="page" id="page-orders">
+  <div style="padding-top: 90px;">
+    <div class="section" style="max-width: 700px;">
+      <h1 style="margin-bottom: 8px;">My Orders</h1>
+      <p style="color: var(--text-muted); margin-bottom: 32px;">Track all your past and active orders</p>
+      <div id="orders-list">
+        <div class="loader"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Mobile Cart Float Button -->
+<button id="mobile-cart-btn" onclick="toggleMobileCart()" style="display:none; position:fixed; bottom:24px; right:24px; z-index:600; width:60px; height:60px; border-radius:50%; border:none; background:var(--brand-gradient); color:white; font-size:1.4rem; cursor:pointer; box-shadow:var(--shadow-brand); align-items:center; justify-content:center;">
+  🛒
+</button>
+
+<script src="data.js"></script>
+<script src="app.js"></script>
+<script>
+  window.addEventListener('load', async function () {
+    if (window.Clerk) {
+      await Clerk.load();
+      if (typeof updateAuthButton === 'function') updateAuthButton();
+    }
+  });
+</script>
+</body>
+</html>
+
