@@ -76,11 +76,11 @@ const restaurants = [
     deliveryTime: "20-28 min",
     minOrder: 300,
     deliveryFee: 50,
-    image: "https://images.unsplash.com/photo-1617196034183-421b4040ed20?w=400&q=80",
+    image: "https://images.unsplash.com/photo-1579871494447-9811cf80d66c?w=600&q=80",
     tags: ["Sushi", "Ramen", "Tempura"],
-    isOpen: false,
+    isOpen: true,
     distance: "3.5 km",
-    promoted: false
+    promoted: true
   },
   {
     id: 6,
@@ -94,6 +94,104 @@ const restaurants = [
     tags: ["Tacos", "Burritos", "Nachos"],
     isOpen: true,
     distance: "1.5 km",
+    promoted: false
+  },
+  {
+    id: 7,
+    name: "The Kebab Corner",
+    cuisine: "Middle Eastern",
+    rating: 4.3,
+    deliveryTime: "15-22 min",
+    minOrder: 200,
+    deliveryFee: 25,
+    image: "https://images.unsplash.com/photo-1529006557810-274b9b2fc783?w=400&q=80",
+    tags: ["Kebabs", "Shawarma", "Hummus"],
+    isOpen: true,
+    distance: "1.0 km",
+    promoted: false
+  },
+  {
+    id: 8,
+    name: "Green Bowl",
+    cuisine: "Healthy",
+    rating: 4.6,
+    deliveryTime: "12-18 min",
+    minOrder: 180,
+    deliveryFee: 20,
+    image: "https://images.unsplash.com/photo-1512621776951-a57141f2eefd?w=400&q=80",
+    tags: ["Salads", "Bowls", "Smoothies"],
+    isOpen: true,
+    distance: "0.5 km",
+    promoted: true
+  },
+  {
+    id: 9,
+    name: "Le Bistro Parisien",
+    cuisine: "French",
+    rating: 4.8,
+    deliveryTime: "15-22 min",
+    minOrder: 250,
+    deliveryFee: 35,
+    image: "https://images.unsplash.com/photo-1550966871-3ed3cdb5ed0c?w=600&q=80",
+    tags: ["Croissants", "Pastas", "Bakery"],
+    isOpen: true,
+    distance: "1.4 km",
+    promoted: true
+  },
+  {
+    id: 10,
+    name: "Seoul Kitchen",
+    cuisine: "Korean",
+    rating: 4.7,
+    deliveryTime: "18-25 min",
+    minOrder: 220,
+    deliveryFee: 35,
+    image: "https://images.unsplash.com/photo-1553163147-622ab57be1c7?w=600&q=80",
+    tags: ["Bibimbap", "Fried Chicken", "K-Food"],
+    isOpen: true,
+    distance: "2.2 km",
+    promoted: false
+  },
+  {
+    id: 11,
+    name: "Dosa Dynasty",
+    cuisine: "South Indian",
+    rating: 4.8,
+    deliveryTime: "14-20 min",
+    minOrder: 120,
+    deliveryFee: 20,
+    image: "https://images.unsplash.com/photo-1668236543090-82eba5ee5976?w=600&q=80",
+    tags: ["Dosa", "Idli", "Filter Coffee"],
+    isOpen: true,
+    distance: "0.9 km",
+    promoted: true
+  },
+  {
+    id: 12,
+    name: "Bella Gelato & Waffles",
+    cuisine: "Desserts",
+    rating: 4.9,
+    deliveryTime: "12-18 min",
+    minOrder: 150,
+    deliveryFee: 25,
+    image: "https://images.unsplash.com/photo-1563805042-7684c019e1cb?w=600&q=80",
+    tags: ["Waffles", "Gelato", "Pancakes"],
+    isOpen: true,
+    distance: "1.1 km",
+    promoted: false
+  },
+  {
+    id: 13,
+    name: "Coastal Catch",
+    cuisine: "Seafood",
+    rating: 4.6,
+    deliveryTime: "18-24 min",
+    minOrder: 250,
+    deliveryFee: 40,
+    image: "https://images.unsplash.com/photo-1534422298391-e4f8c172dddb?w=600&q=80",
+    tags: ["Fish Curry", "Prawns", "Coastal"],
+    isOpen: true,
+    distance: "2.4 km",
     promoted: false
   }
 ];
@@ -125,14 +223,51 @@ const menuItems = {
     { id: 404, name: "Garlic Bread", price: 120, description: "Toasted garlic bread with herbs", category: "Sides", veg: true, image: "https://images.unsplash.com/photo-1573140247632-f8fd74997d5c?w=300&q=80", bestseller: false }
   ],
   5: [
-    { id: 501, name: "Salmon Nigiri (6pc)", price: 650, description: "Fresh salmon over seasoned rice", category: "Sushi", veg: false, image: "https://images.unsplash.com/photo-1617196034183-421b4040ed20?w=300&q=80", bestseller: true },
+    { id: 501, name: "Salmon Nigiri (6pc)", price: 650, description: "Fresh Norwegian salmon over seasoned rice", category: "Sushi", veg: false, image: "https://images.unsplash.com/photo-1611143669185-af224c5e3252?w=300&q=80", bestseller: true },
     { id: 502, name: "Tonkotsu Ramen", price: 480, description: "Rich pork bone broth with noodles", category: "Ramen", veg: false, image: "https://images.unsplash.com/photo-1569718212165-3a8278d5f624?w=300&q=80", bestseller: true },
-    { id: 503, name: "Vegetable Tempura", price: 380, description: "Lightly battered seasonal vegetables", category: "Starters", veg: true, image: "https://images.unsplash.com/photo-1546833998-877b37c2e5c6?w=300&q=80", bestseller: false }
+    { id: 503, name: "Vegetable Tempura", price: 380, description: "Lightly battered seasonal vegetables", category: "Starters", veg: true, image: "https://images.unsplash.com/photo-1546833998-877b37c2e5c6?w=300&q=80", bestseller: false },
+    { id: 504, name: "Spicy Tuna Roll (8pc)", price: 550, description: "Fresh yellowfin tuna in spicy sriracha sauce", category: "Sushi", veg: false, image: "https://images.unsplash.com/photo-1579871494447-9811cf80d66c?w=300&q=80", bestseller: true },
+    { id: 505, name: "Edamame with Sea Salt", price: 220, description: "Steamed young soybeans with sea salt", category: "Starters", veg: true, image: "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=300&q=80", bestseller: false }
   ],
   6: [
     { id: 601, name: "Chicken Tacos (3pc)", price: 260, description: "Grilled chicken with salsa and cheese", category: "Tacos", veg: false, image: "https://images.unsplash.com/photo-1551504734-5ee1c4a1479b?w=300&q=80", bestseller: true },
     { id: 602, name: "Veg Burrito", price: 220, description: "Loaded veggie burrito with rice and beans", category: "Burritos", veg: true, image: "https://images.unsplash.com/photo-1626700051175-6818013e1d4f?w=300&q=80", bestseller: false },
     { id: 603, name: "Nachos Supreme", price: 200, description: "Crispy nachos with guacamole and sour cream", category: "Starters", veg: true, image: "https://images.unsplash.com/photo-1574894709920-11b28be1368c?w=300&q=80", bestseller: false }
+  ],
+  7: [
+    { id: 701, name: "Mixed Grill Platter", price: 480, description: "Selection of chicken & lamb kebabs", category: "Main Course", veg: false, image: "https://images.unsplash.com/photo-1529006557810-274b9b2fc783?w=300&q=80", bestseller: true },
+    { id: 702, name: "Chicken Shawarma Wrap", price: 220, description: "Slow-roasted chicken in pita", category: "Wraps", veg: false, image: "https://images.unsplash.com/photo-1561626423-a51b45aef0a1?w=300&q=80", bestseller: true },
+    { id: 703, name: "Hummus Plate", price: 160, description: "Smooth hummus with olive oil & pita", category: "Starters", veg: true, image: "https://images.unsplash.com/photo-1578020190125-f4f7c18bc9cb?w=300&q=80", bestseller: false }
+  ],
+  8: [
+    { id: 801, name: "Buddha Bowl", price: 280, description: "Quinoa, roasted veggies, avocado, tahini", category: "Bowls", veg: true, image: "https://images.unsplash.com/photo-1512621776951-a57141f2eefd?w=300&q=80", bestseller: true },
+    { id: 802, name: "Acai Smoothie Bowl", price: 220, description: "Acai base with granola and fresh berries", category: "Bowls", veg: true, image: "https://images.unsplash.com/photo-1591543869747-95f71d0afeaa?w=300&q=80", bestseller: true },
+    { id: 803, name: "Greek Salad", price: 180, description: "Cucumbers, tomatoes, olives and feta", category: "Salads", veg: true, image: "https://images.unsplash.com/photo-1540189549336-e6e99c3679fe?w=300&q=80", bestseller: false }
+  ],
+  9: [
+    { id: 901, name: "Butter Croissant (2pc)", price: 180, description: "Flaky golden pure butter Viennoiserie", category: "Bakery", veg: true, image: "https://images.unsplash.com/photo-1555507036-ab1f4038808a?w=300&q=80", bestseller: true },
+    { id: 902, name: "Truffle Cream Pasta", price: 380, description: "Fettuccine in black truffle cream sauce", category: "Main Course", veg: true, image: "https://images.unsplash.com/photo-1621996346565-e3d5d6281691?w=300&q=80", bestseller: true },
+    { id: 903, name: "Classic Creme Brulee", price: 220, description: "Vanilla bean custard with caramelized sugar", category: "Desserts", veg: true, image: "https://images.unsplash.com/photo-1470124182917-cc6e71b22ecc?w=300&q=80", bestseller: true }
+  ],
+  10: [
+    { id: 1001, name: "Yangnyeom Fried Chicken", price: 340, description: "Crispy chicken in sweet & spicy gochujang glaze", category: "Main Course", veg: false, image: "https://images.unsplash.com/photo-1562967914-608f82629710?w=300&q=80", bestseller: true },
+    { id: 1002, name: "Dolsot Bibimbap", price: 290, description: "Rice bowl with sautéed veggies & egg", category: "Main Course", veg: true, image: "https://images.unsplash.com/photo-1590301157890-4810ed352733?w=300&q=80", bestseller: true },
+    { id: 1003, name: "Kimchi Fried Rice", price: 220, description: "Wok-fried rice with aged tangy kimchi", category: "Rice", veg: true, image: "https://images.unsplash.com/photo-1512058564366-18510be2db19?w=300&q=80", bestseller: false }
+  ],
+  11: [
+    { id: 1101, name: "Mysore Masala Dosa", price: 160, description: "Crispy crepe with spicy potato filling", category: "Dosa", veg: true, image: "https://images.unsplash.com/photo-1668236543090-82eba5ee5976?w=300&q=80", bestseller: true },
+    { id: 1102, name: "Ghee Podi Idli (3pc)", price: 130, description: "Steamed rice cakes in gunpowder podi & ghee", category: "Idli", veg: true, image: "https://images.unsplash.com/photo-1589301760014-d929f3979dbc?w=300&q=80", bestseller: true },
+    { id: 1103, name: "South Indian Filter Coffee", price: 70, description: "Strong traditional chicory filter coffee", category: "Beverages", veg: true, image: "https://images.unsplash.com/photo-1514432324607-a09d9b4aefdd?w=300&q=80", bestseller: true }
+  ],
+  12: [
+    { id: 1201, name: "Belgian Chocolate Waffle", price: 240, description: "Golden waffle with Belgian chocolate ganache", category: "Waffles", veg: true, image: "https://images.unsplash.com/photo-1562376552-0d160a2f238d?w=300&q=80", bestseller: true },
+    { id: 1202, name: "Pistachio Gelato Tub", price: 290, description: "Silky slow-churned Sicilian pistachio gelato", category: "Gelato", veg: true, image: "https://images.unsplash.com/photo-1560008581-09826d1de69e?w=300&q=80", bestseller: true },
+    { id: 1203, name: "Salted Caramel Shake", price: 180, description: "Thick caramel milkshake with sea salt", category: "Beverages", veg: true, image: "https://images.unsplash.com/photo-1572490122747-3968b75cc699?w=300&q=80", bestseller: false }
+  ],
+  13: [
+    { id: 1301, name: "Goan Prawn Curry with Rice", price: 390, description: "Juicy prawns in tangy coconut kokum curry", category: "Main Course", veg: false, image: "https://images.unsplash.com/photo-1544025162-d76694265947?w=300&q=80", bestseller: true },
+    { id: 1302, name: "Surmai Rava Fry", price: 360, description: "Kingfish steak in crisp semolina rava", category: "Starters", veg: false, image: "https://images.unsplash.com/photo-1534422298391-e4f8c172dddb?w=300&q=80", bestseller: true },
+    { id: 1303, name: "Refreshing Sol Kadhi", price: 80, description: "Coconut milk and kokum digestive cooler", category: "Beverages", veg: true, image: "https://images.unsplash.com/photo-1568051243858-533a607809a5?w=300&q=80", bestseller: false }
   ]
 };
 

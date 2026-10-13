@@ -32,9 +32,9 @@ const RESTAURANTS = [
   {
     id: 5, name: "Sushi Sakura", cuisine: "Japanese", rating: 4.9,
     deliveryTime: "20-28 min", minOrder: 300, deliveryFee: 50,
-    image: "https://images.unsplash.com/photo-1617196034183-421b4040ed20?w=600&q=80",
-    tags: ["Sushi", "Ramen", "Tempura"], isOpen: false, distance: "3.5 km", promoted: false,
-    description: "Premium Japanese cuisine crafted by a Michelin-starred chef. Only the freshest ingredients sourced daily."
+    image: "https://images.unsplash.com/photo-1579871494447-9811cf80d66c?w=600&q=80",
+    tags: ["Sushi", "Ramen", "Tempura"], isOpen: true, distance: "3.5 km", promoted: true,
+    description: "Premium Japanese cuisine crafted by master chefs. Authentic hand-rolled sushi, artisanal ramen, and fresh tempura."
   },
   {
     id: 6, name: "Taco Fiesta", cuisine: "Mexican", rating: 4.4,
@@ -56,6 +56,41 @@ const RESTAURANTS = [
     image: "https://images.unsplash.com/photo-1512621776951-a57141f2eefd?w=600&q=80",
     tags: ["Salads", "Bowls", "Smoothies"], isOpen: true, distance: "0.5 km", promoted: true,
     description: "Nutritious and delicious power bowls, smoothies, and salads. Fuel your body the right way."
+  },
+  {
+    id: 9, name: "Le Bistro Parisien", cuisine: "French", rating: 4.8,
+    deliveryTime: "15-22 min", minOrder: 250, deliveryFee: 35,
+    image: "https://images.unsplash.com/photo-1550966871-3ed3cdb5ed0c?w=600&q=80",
+    tags: ["Croissants", "Pastas", "Bakery"], isOpen: true, distance: "1.4 km", promoted: true,
+    description: "Charming Parisian bakery & bistro. Artisan sourdoughs, golden flaky croissants, and classic French continental delicacies."
+  },
+  {
+    id: 10, name: "Seoul Kitchen", cuisine: "Korean", rating: 4.7,
+    deliveryTime: "18-25 min", minOrder: 220, deliveryFee: 35,
+    image: "https://images.unsplash.com/photo-1553163147-622ab57be1c7?w=600&q=80",
+    tags: ["Bibimbap", "Fried Chicken", "K-Food"], isOpen: true, distance: "2.2 km", promoted: false,
+    description: "Authentic Korean street food and comforting classics with bold gochujang and sweet-savory marinades."
+  },
+  {
+    id: 11, name: "Dosa Dynasty", cuisine: "South Indian", rating: 4.8,
+    deliveryTime: "14-20 min", minOrder: 120, deliveryFee: 20,
+    image: "https://images.unsplash.com/photo-1668236543090-82eba5ee5976?w=600&q=80",
+    tags: ["Dosa", "Idli", "Filter Coffee"], isOpen: true, distance: "0.9 km", promoted: true,
+    description: "Crispy golden fermented dosas, piping hot sambar, freshly ground coconut chutneys, and Kumbakonam degree filter coffee."
+  },
+  {
+    id: 12, name: "Bella Gelato & Waffles", cuisine: "Desserts", rating: 4.9,
+    deliveryTime: "12-18 min", minOrder: 150, deliveryFee: 25,
+    image: "https://images.unsplash.com/photo-1563805042-7684c019e1cb?w=600&q=80",
+    tags: ["Waffles", "Gelato", "Pancakes"], isOpen: true, distance: "1.1 km", promoted: false,
+    description: "Handcrafted artisan Italian gelato, hot Belgian liege waffles, and decadent dessert jars prepared fresh daily."
+  },
+  {
+    id: 13, name: "Coastal Catch", cuisine: "Seafood", rating: 4.6,
+    deliveryTime: "18-24 min", minOrder: 250, deliveryFee: 40,
+    image: "https://images.unsplash.com/photo-1534422298391-e4f8c172dddb?w=600&q=80",
+    tags: ["Fish Curry", "Prawns", "Coastal"], isOpen: true, distance: "2.4 km", promoted: false,
+    description: "Fresh daily catch from the Arabian Sea, cooked in coconut-rich Konkani, Goan, and Mangalorean masala gravies."
   }
 ];
 
@@ -87,9 +122,11 @@ const MENU_ITEMS = {
     { id: 404, name: "Garlic Bread", price: 120, description: "Toasted ciabatta with roasted garlic butter & herbs", category: "Sides", veg: true, image: "https://images.unsplash.com/photo-1573140247632-f8fd74997d5c?w=400&q=80", bestseller: false, rating: 4.4 }
   ],
   5: [
-    { id: 501, name: "Salmon Nigiri (6pc)", price: 650, description: "Premium Norwegian salmon over hand-pressed sushi rice with wasabi", category: "Sushi", veg: false, image: "https://images.unsplash.com/photo-1617196034183-421b4040ed20?w=400&q=80", bestseller: true, rating: 4.9 },
-    { id: 502, name: "Tonkotsu Ramen", price: 480, description: "12-hour slow-boiled pork bone broth with chashu, soft-boiled egg & noodles", category: "Ramen", veg: false, image: "https://images.unsplash.com/photo-1569718212165-3a8278d5f624?w=400&q=80", bestseller: true, rating: 4.8 },
-    { id: 503, name: "Vegetable Tempura", price: 380, description: "Lightly battered seasonal vegetables, tentsuyu dipping sauce", category: "Starters", veg: true, image: "https://images.unsplash.com/photo-1546833998-877b37c2e5c6?w=400&q=80", bestseller: false, rating: 4.6 }
+    { id: 501, name: "Salmon Nigiri (6pc)", price: 650, description: "Premium Norwegian salmon over hand-pressed sushi rice with wasabi", category: "Sushi", veg: false, image: "https://images.unsplash.com/photo-1611143669185-af224c5e3252?w=400&q=80", bestseller: true, rating: 4.9 },
+    { id: 502, name: "Tonkotsu Ramen", price: 480, description: "12-hour slow-boiled pork bone broth with chashu, soft-boiled ajitsuke egg & noodles", category: "Ramen", veg: false, image: "https://images.unsplash.com/photo-1569718212165-3a8278d5f624?w=400&q=80", bestseller: true, rating: 4.8 },
+    { id: 503, name: "Vegetable Tempura", price: 380, description: "Lightly battered seasonal crisp vegetables, tentsuyu dipping sauce", category: "Starters", veg: true, image: "https://images.unsplash.com/photo-1546833998-877b37c2e5c6?w=400&q=80", bestseller: false, rating: 4.6 },
+    { id: 504, name: "Spicy Tuna Roll (8pc)", price: 550, description: "Fresh yellowfin tuna tossed in spicy sriracha mayo, cucumber & toasted sesame", category: "Sushi", veg: false, image: "https://images.unsplash.com/photo-1579871494447-9811cf80d66c?w=400&q=80", bestseller: true, rating: 4.8 },
+    { id: 505, name: "Edamame with Sea Salt", price: 220, description: "Steamed young soybeans tossed with Maldon sea salt crystals", category: "Starters", veg: true, image: "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=400&q=80", bestseller: false, rating: 4.5 }
   ],
   6: [
     { id: 601, name: "Chicken Tacos (3pc)", price: 260, description: "Grilled chipotle chicken, pico de gallo, avocado crema in corn tortillas", category: "Tacos", veg: false, image: "https://images.unsplash.com/photo-1551504734-5ee1c4a1479b?w=400&q=80", bestseller: true, rating: 4.8 },
@@ -105,10 +142,40 @@ const MENU_ITEMS = {
     { id: 801, name: "Buddha Bowl", price: 280, description: "Quinoa, roasted veggies, edamame, avocado, tahini dressing", category: "Bowls", veg: true, image: "https://images.unsplash.com/photo-1512621776951-a57141f2eefd?w=400&q=80", bestseller: true, rating: 4.8 },
     { id: 802, name: "Acai Smoothie Bowl", price: 220, description: "Thick acai base with granola, fresh berries & honey drizzle", category: "Bowls", veg: true, image: "https://images.unsplash.com/photo-1591543869747-95f71d0afeaa?w=400&q=80", bestseller: true, rating: 4.7 },
     { id: 803, name: "Greek Salad", price: 180, description: "Fresh cucumbers, tomatoes, olives, feta & lemon herb dressing", category: "Salads", veg: true, image: "https://images.unsplash.com/photo-1540189549336-e6e99c3679fe?w=400&q=80", bestseller: false, rating: 4.5 }
+  ],
+  9: [
+    { id: 901, name: "Butter Croissant (2pc)", price: 180, description: "Flaky golden Viennoiserie laminated with pure French butter", category: "Bakery", veg: true, image: "https://images.unsplash.com/photo-1555507036-ab1f4038808a?w=400&q=80", bestseller: true, rating: 4.9 },
+    { id: 902, name: "Truffle Cream Pasta", price: 380, description: "Fettuccine tossed in aromatic black truffle cream with shaved parmesan", category: "Main Course", veg: true, image: "https://images.unsplash.com/photo-1621996346565-e3d5d6281691?w=400&q=80", bestseller: true, rating: 4.8 },
+    { id: 903, name: "French Onion Soup", price: 240, description: "Slow-caramelized onions in rich herb broth topped with melted Gruyere crouton", category: "Starters", veg: true, image: "https://images.unsplash.com/photo-1547496502-affa22d38842?w=400&q=80", bestseller: false, rating: 4.6 },
+    { id: 904, name: "Classic Creme Brulee", price: 220, description: "Velvety vanilla bean custard with crackling caramelized sugar crust", category: "Desserts", veg: true, image: "https://images.unsplash.com/photo-1470124182917-cc6e71b22ecc?w=400&q=80", bestseller: true, rating: 4.9 }
+  ],
+  10: [
+    { id: 1001, name: "Yangnyeom Fried Chicken", price: 340, description: "Double-fried ultra-crispy boneless chicken coated in sweet & spicy gochujang glaze", category: "Main Course", veg: false, image: "https://images.unsplash.com/photo-1562967914-608f82629710?w=400&q=80", bestseller: true, rating: 4.9 },
+    { id: 1002, name: "Dolsot Bibimbap", price: 290, description: "Steamed rice bowl with seasoned sautéed vegetables, fried egg & spicy bibim sauce", category: "Main Course", veg: true, image: "https://images.unsplash.com/photo-1590301157890-4810ed352733?w=400&q=80", bestseller: true, rating: 4.8 },
+    { id: 1003, name: "Tteokbokki Deluxe", price: 240, description: "Chewy Korean rice cakes and fish cakes simmered in fiery sweet red chili sauce", category: "Starters", veg: false, image: "https://images.unsplash.com/photo-1583032015879-66e60b1388b1?w=400&q=80", bestseller: false, rating: 4.6 },
+    { id: 1004, name: "Kimchi Fried Rice", price: 220, description: "Wok-fried rice with aged tangy kimchi, seaweed crisps & sunny-side up egg", category: "Rice", veg: true, image: "https://images.unsplash.com/photo-1512058564366-18510be2db19?w=400&q=80", bestseller: false, rating: 4.5 }
+  ],
+  11: [
+    { id: 1101, name: "Mysore Masala Dosa", price: 160, description: "Crispy crepe smeared with red chili-garlic chutney and spiced potato filling", category: "Dosa", veg: true, image: "https://images.unsplash.com/photo-1668236543090-82eba5ee5976?w=400&q=80", bestseller: true, rating: 4.9 },
+    { id: 1102, name: "Ghee Podi Idli (3pc)", price: 130, description: "Soft steamed rice cakes tossed in fragrant gunpowder spice podi and melting desi ghee", category: "Idli", veg: true, image: "https://images.unsplash.com/photo-1589301760014-d929f3979dbc?w=400&q=80", bestseller: true, rating: 4.8 },
+    { id: 1103, name: "Crispy Medu Vada (2pc)", price: 110, description: "Golden fried savory lentil donuts served with piping hot drumstick sambar", category: "Starters", veg: true, image: "https://images.unsplash.com/photo-1601050690597-df0568f70950?w=400&q=80", bestseller: false, rating: 4.7 },
+    { id: 1104, name: "South Indian Filter Coffee", price: 70, description: "Traditional strong chicory-infused filter coffee frothed in a brass davara", category: "Beverages", veg: true, image: "https://images.unsplash.com/photo-1514432324607-a09d9b4aefdd?w=400&q=80", bestseller: true, rating: 4.9 }
+  ],
+  12: [
+    { id: 1201, name: "Belgian Chocolate Waffle", price: 240, description: "Crispy golden waffle smothered in warm Belgian milk & dark chocolate ganache", category: "Waffles", veg: true, image: "https://images.unsplash.com/photo-1562376552-0d160a2f238d?w=400&q=80", bestseller: true, rating: 4.9 },
+    { id: 1202, name: "Sicilian Pistachio Gelato Tub", price: 290, description: "Silky slow-churned gelato made with 100% roasted Sicilian pistachio paste", category: "Gelato", veg: true, image: "https://images.unsplash.com/photo-1560008581-09826d1de69e?w=400&q=80", bestseller: true, rating: 4.8 },
+    { id: 1203, name: "Nutella Strawberry Crepe", price: 220, description: "Paper-thin warm crepe stuffed with fresh sliced strawberries and generous Nutella", category: "Crepes", veg: true, image: "https://images.unsplash.com/photo-1551024709-8f23befc6f87?w=400&q=80", bestseller: false, rating: 4.7 },
+    { id: 1204, name: "Salted Caramel Shake", price: 180, description: "Thick milkshake blended with house caramel sauce and sea salt crystals", category: "Beverages", veg: true, image: "https://images.unsplash.com/photo-1572490122747-3968b75cc699?w=400&q=80", bestseller: false, rating: 4.6 }
+  ],
+  13: [
+    { id: 1301, name: "Goan Prawn Curry with Rice", price: 390, description: "Juicy tiger prawns simmered in tangy coconut, kokum & Kashmiri chili curry", category: "Main Course", veg: false, image: "https://images.unsplash.com/photo-1544025162-d76694265947?w=400&q=80", bestseller: true, rating: 4.8 },
+    { id: 1302, name: "Surmai Rava Fry", price: 360, description: "Kingfish steak marinated in coastal spices and crusted in crisp semolina rava", category: "Starters", veg: false, image: "https://images.unsplash.com/photo-1534422298391-e4f8c172dddb?w=400&q=80", bestseller: true, rating: 4.7 },
+    { id: 1303, name: "Butter Garlic Prawns", price: 380, description: "Succulent prawns pan-tossed in garlic butter with fresh herbs and lemon", category: "Starters", veg: false, image: "https://images.unsplash.com/photo-1565680018434-b513d5e5fd47?w=400&q=80", bestseller: false, rating: 4.7 },
+    { id: 1304, name: "Refreshing Sol Kadhi", price: 80, description: "Digestive coastal cooler made from fresh coconut milk, kokum and green chilies", category: "Beverages", veg: true, image: "https://images.unsplash.com/photo-1568051243858-533a607809a5?w=400&q=80", bestseller: false, rating: 4.5 }
   ]
 };
 
-const CUISINES = ["All", "Indian", "Chinese", "American", "Italian", "Japanese", "Mexican", "Middle Eastern", "Healthy"];
+const CUISINES = ["All", "Indian", "Chinese", "American", "Italian", "Japanese", "Mexican", "Middle Eastern", "Healthy", "French", "Korean", "South Indian", "Desserts", "Seafood"];
 
 // Simulate API delay
 function apiDelay(ms = 400) {
