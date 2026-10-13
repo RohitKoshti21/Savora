@@ -17,7 +17,7 @@ const restaurants = [
     name: "Spice Garden",
     cuisine: "Indian",
     rating: 4.8,
-    deliveryTime: "25-35 min",
+    deliveryTime: "18-24 min",
     minOrder: 150,
     deliveryFee: 30,
     image: "https://images.unsplash.com/photo-1585937421612-70a008356fbe?w=400&q=80",
@@ -31,7 +31,7 @@ const restaurants = [
     name: "Dragon Wok",
     cuisine: "Chinese",
     rating: 4.5,
-    deliveryTime: "30-40 min",
+    deliveryTime: "20-26 min",
     minOrder: 200,
     deliveryFee: 40,
     image: "https://images.unsplash.com/photo-1563245372-f21724e3856d?w=400&q=80",
@@ -45,7 +45,7 @@ const restaurants = [
     name: "Burger Republic",
     cuisine: "American",
     rating: 4.6,
-    deliveryTime: "20-30 min",
+    deliveryTime: "15-22 min",
     minOrder: 120,
     deliveryFee: 25,
     image: "https://images.unsplash.com/photo-1568901346375-23c9450c58cd?w=400&q=80",
@@ -59,7 +59,7 @@ const restaurants = [
     name: "Pizza Palazzo",
     cuisine: "Italian",
     rating: 4.7,
-    deliveryTime: "35-45 min",
+    deliveryTime: "18-25 min",
     minOrder: 250,
     deliveryFee: 35,
     image: "https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?w=400&q=80",
@@ -73,7 +73,7 @@ const restaurants = [
     name: "Sushi Sakura",
     cuisine: "Japanese",
     rating: 4.9,
-    deliveryTime: "40-50 min",
+    deliveryTime: "20-28 min",
     minOrder: 300,
     deliveryFee: 50,
     image: "https://images.unsplash.com/photo-1617196034183-421b4040ed20?w=400&q=80",
@@ -87,7 +87,7 @@ const restaurants = [
     name: "Taco Fiesta",
     cuisine: "Mexican",
     rating: 4.4,
-    deliveryTime: "25-35 min",
+    deliveryTime: "16-24 min",
     minOrder: 180,
     deliveryFee: 30,
     image: "https://images.unsplash.com/photo-1551504734-5ee1c4a1479b?w=400&q=80",
@@ -197,23 +197,35 @@ app.post('/api/orders', (req, res) => {
     address,
     paymentMethod,
     status: 'placed',
+    // Randomly assign ~45% of orders to experience a late delivery
+    isLate: Math.random() < 0.45,
     statusHistory: [
       { status: 'placed', time: new Date().toISOString(), message: 'Order placed successfully' }
     ],
     createdAt: new Date().toISOString(),
-    estimatedDelivery: new Date(Date.now() + 35 * 60000).toISOString()
+    estimatedDelivery: new Date(Date.now() + 22 * 60000).toISOString()
   };
 
   orders.push(order);
 
-  // Simulate order status progression
-  const statusFlow = [
+  // Status progression: on-time flow vs late flow
+  const onTimeFlow = [
     { status: 'confirmed', delay: 5000, message: 'Restaurant confirmed your order' },
     { status: 'preparing', delay: 12000, message: 'Chef is preparing your food' },
     { status: 'picked_up', delay: 25000, message: 'Delivery partner picked up your order' },
-    { status: 'on_the_way', delay: 30000, message: 'Your order is on the way!' },
-    { status: 'delivered', delay: 45000, message: 'Order delivered! Enjoy your meal 🎉' }
+    { status: 'on_the_way', delay: 30000, message: 'Your order is on the way! 6–8 mins away.' },
+    { status: 'delivered', delay: 45000, message: 'Order delivered on time in 21 mins! Enjoy your meal 🎉' }
   ];
+
+  const lateFlow = [
+    { status: 'confirmed', delay: 5000, message: 'Restaurant confirmed your order' },
+    { status: 'preparing', delay: 12000, message: 'Kitchen rush: Order preparation delayed.' },
+    { status: 'picked_up', delay: 25000, message: 'Delivery partner picked up your order from restaurant.' },
+    { status: 'on_the_way', delay: 30000, message: '⚠️ Heavy traffic & rain delay: Delivery time will exceed 30 mins!' },
+    { status: 'delivered', delay: 45000, message: '🚨 Delivered late (34 mins)! 30-Min Promise breached. You can now claim 50% OFF!' }
+  ];
+
+  const statusFlow = order.isLate ? lateFlow : onTimeFlow;
 
   statusFlow.forEach(({ status, delay, message }) => {
     setTimeout(() => {
@@ -275,7 +287,7 @@ app.get('/api/bpm/stats', (req, res) => {
     data: {
       totalOrders: orders.length + 142,
       activeOrders: orders.filter(o => !['delivered', 'cancelled'].includes(o.status)).length + 8,
-      avgDeliveryTime: 32,
+      avgDeliveryTime: 22,
       customerSatisfaction: 94.7,
       totalRestaurants: restaurants.length,
       totalUsers: users.length + 1247,

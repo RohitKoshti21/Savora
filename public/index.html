@@ -53,7 +53,7 @@
   <section class="hero">
     <div class="hero-content">
       <div class="hero-badge">
-        <span>⚡</span> 30-Minute Delivery Guaranteed
+        <span>⏱️</span> Delivery-Time Promise: Under 30 Mins or 50% OFF Next Order
       </div>
       <h1 class="hero-title">
         Craving Something <span class="hero-title-gradient">Amazing?</span>
@@ -75,7 +75,7 @@
           <div class="hero-stat-label">Happy Customers</div>
         </div>
         <div>
-          <div class="hero-stat-value">30 min</div>
+          <div class="hero-stat-value">22 min</div>
           <div class="hero-stat-label">Avg. Delivery</div>
         </div>
         <div>
@@ -121,10 +121,10 @@
     <div style="max-width: 1280px; margin: 0 auto;">
       <h2 style="text-align:center; margin-bottom: 48px;">Why <span style="background: linear-gradient(135deg,#FF4500,#FF8C00); -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text;">Savora?</span></h2>
       <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 24px;">
-        <div class="card" style="padding: 28px; text-align: center;">
-          <div style="font-size: 2.5rem; margin-bottom: 16px;">⚡</div>
-          <h3 style="margin-bottom: 8px;">Lightning Fast</h3>
-          <p style="font-size: 0.88rem;">Average 28-minute delivery time with real-time tracking</p>
+        <div class="card" style="padding: 28px; text-align: center; border-top: 3px solid var(--brand-primary);">
+          <div style="font-size: 2.5rem; margin-bottom: 16px;">⏱️</div>
+          <h3 style="margin-bottom: 8px;">Delivery-Time Promise</h3>
+          <p style="font-size: 0.88rem;">Guaranteed under 30 minutes! If your food arrives late, receive an instant <strong>50% OFF voucher</strong> on your next order.</p>
         </div>
         <div class="card" style="padding: 28px; text-align: center;">
           <div style="font-size: 2.5rem; margin-bottom: 16px;">🛡️</div>
@@ -175,7 +175,8 @@
         <ul class="footer-links">
           <li><a href="#">Add Restaurant</a></li>
           <li><a href="#">Deliver with Us</a></li>
-          <li><a href="bpm.html">BPM &amp; ERD</a></li>
+          <li><a href="bpm.html">BPM &amp; ERD Overview</a></li>
+          <li><a href="erd-bpmn.html">Interactive BPMN &amp; ERD Canvas</a></li>
           <li><a href="#">API</a></li>
         </ul>
       </div>
@@ -240,7 +241,32 @@
             </div>
           </div>
           <div class="cart-footer" id="cart-footer" style="display:none;">
+            <div class="promise-cart-badge">
+              <span style="font-size: 1.25rem;">⏱️</span>
+              <div>
+                <strong>Delivery-Time Promise:</strong> Guaranteed under 30 mins or get <strong>50% OFF</strong> your next order!
+              </div>
+            </div>
+
+            <!-- Coupon / Voucher Section -->
+            <div class="coupon-section">
+              <div class="coupon-input-wrap">
+                <input type="text" class="coupon-input" id="coupon-code-input" placeholder="Coupon code (e.g. PROMISE50)">
+                <button class="btn btn-sm btn-primary" onclick="applyCoupon()" id="coupon-apply-btn">Apply</button>
+              </div>
+              <div id="coupon-status-hint" class="coupon-status-hint locked">
+                <span>🔒 PROMISE50 locked (only available if an order exceeded 30 min)</span>
+              </div>
+              <div class="coupon-applied-pill" id="coupon-applied-pill">
+                <span id="coupon-applied-text">🏷️ PROMISE50 (50% OFF) Applied</span>
+                <button class="coupon-remove-btn" onclick="removeCoupon()">✕ Remove</button>
+              </div>
+            </div>
+
             <div class="cart-total-row"><span>Subtotal</span><span id="cart-subtotal">₹0</span></div>
+            <div class="cart-total-row discount-row" id="cart-discount-row">
+              <span>50% Promise Discount</span><span id="cart-discount">-₹0</span>
+            </div>
             <div class="cart-total-row"><span>Delivery Fee</span><span id="cart-delivery-fee">₹30</span></div>
             <div class="cart-total-row"><span>Taxes (5%)</span><span id="cart-tax">₹0</span></div>
             <div class="cart-total-row grand"><span>Total</span><span id="cart-grand-total">₹0</span></div>

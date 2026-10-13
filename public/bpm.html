@@ -19,124 +19,6 @@
       margin: 0;
     }
 
-    /* ERD Styles */
-    .erd-wrapper {
-      overflow-x: auto;
-      padding: 20px 0;
-    }
-
-    .erd-svg-container {
-      min-width: 900px;
-      background: var(--bg-card);
-      border-radius: var(--radius-xl);
-      padding: 32px;
-      border: 1px solid var(--border);
-    }
-
-    /* Lifecycle animated steps */
-    .lc-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-      gap: 0;
-      position: relative;
-    }
-
-    .lc-step {
-      text-align: center;
-      padding: 28px 16px 24px;
-      position: relative;
-      cursor: pointer;
-      border-radius: var(--radius-lg);
-      transition: var(--transition);
-      border: 2px solid transparent;
-    }
-
-    .lc-step:hover, .lc-step.active { border-color: var(--brand-primary); background: rgba(255,69,0,0.04); }
-
-    .lc-arrow {
-      position: absolute;
-      right: -16px;
-      top: 50%;
-      transform: translateY(-50%);
-      font-size: 1.4rem;
-      color: var(--brand-primary);
-      z-index: 2;
-    }
-
-    .lc-step:last-child .lc-arrow { display: none; }
-
-    .lc-num {
-      width: 32px; height: 32px;
-      border-radius: 50%;
-      background: var(--brand-gradient);
-      color: white;
-      font-size: 0.8rem;
-      font-weight: 800;
-      display: flex; align-items: center; justify-content: center;
-      margin: 0 auto 12px;
-    }
-
-    .lc-icon { font-size: 2rem; margin-bottom: 10px; }
-    .lc-title { font-weight: 800; font-size: 0.9rem; margin-bottom: 6px; }
-    .lc-sub { font-size: 0.75rem; color: var(--text-muted); line-height: 1.4; }
-
-    .lc-detail-panel {
-      background: var(--bg-muted);
-      border-radius: var(--radius-lg);
-      padding: 28px;
-      margin-top: 24px;
-      border: 1px solid var(--border);
-      animation: fade-in 0.3s ease;
-      display: none;
-    }
-
-    .lc-detail-panel.visible { display: block; }
-    .lc-detail-title { font-size: 1.2rem; font-weight: 800; margin-bottom: 12px; }
-    .lc-detail-list { list-style: none; display: flex; flex-direction: column; gap: 8px; }
-    .lc-detail-list li { display: flex; align-items: flex-start; gap: 10px; font-size: 0.9rem; }
-    .lc-detail-list li::before { content: '→'; color: var(--brand-primary); font-weight: 700; flex-shrink: 0; }
-
-    /* Process flow */
-    .process-flow {
-      display: flex;
-      align-items: center;
-      gap: 0;
-      overflow-x: auto;
-      padding: 24px 0;
-    }
-
-    .pf-step {
-      flex: 1;
-      min-width: 120px;
-      text-align: center;
-      position: relative;
-    }
-
-    .pf-box {
-      padding: 16px 12px;
-      border-radius: var(--radius-md);
-      border: 2px solid;
-      margin: 0 8px;
-      transition: var(--transition);
-    }
-
-    .pf-box:hover { transform: translateY(-4px); box-shadow: var(--shadow-md); }
-
-    .pf-arrow {
-      position: absolute;
-      right: -4px;
-      top: 50%;
-      transform: translateY(-50%);
-      font-size: 1.2rem;
-      z-index: 1;
-    }
-
-    .pf-step:last-child .pf-arrow { display: none; }
-
-    .pf-icon { font-size: 1.6rem; margin-bottom: 6px; }
-    .pf-label { font-size: 0.78rem; font-weight: 700; }
-    .pf-sub { font-size: 0.68rem; color: var(--text-muted); margin-top: 3px; }
-
     /* KPI Cards */
     .kpi-grid {
       display: grid;
@@ -162,28 +44,7 @@
     .kpi-label { font-size: 0.82rem; color: var(--text-muted); font-weight: 500; }
     .kpi-trend { font-size: 0.78rem; color: var(--success); font-weight: 600; }
 
-    /* Table styles */
-    .data-table { width: 100%; border-collapse: collapse; font-size: 0.88rem; }
-    .data-table th { padding: 12px 16px; text-align: left; font-size: 0.78rem; text-transform: uppercase; letter-spacing: 0.5px; color: var(--text-muted); background: var(--bg-muted); border-bottom: 2px solid var(--border); }
-    .data-table td { padding: 12px 16px; border-bottom: 1px solid var(--border); color: var(--text-secondary); }
-    .data-table tr:last-child td { border-bottom: none; }
-    .data-table tr:hover td { background: var(--bg-hover); }
-
-    /* Tabs */
-    .tabs { display: flex; gap: 4px; background: var(--bg-muted); padding: 4px; border-radius: var(--radius-md); margin-bottom: 28px; width: fit-content; }
-    .tab-btn { padding: 10px 20px; border-radius: var(--radius-sm); border: none; background: none; font-family: 'Outfit', sans-serif; font-weight: 600; font-size: 0.88rem; cursor: pointer; color: var(--text-muted); transition: var(--transition); }
-    .tab-btn.active { background: var(--bg-card); color: var(--brand-primary); box-shadow: var(--shadow-sm); }
-    .tab-content { display: none; animation: fade-in 0.3s ease; }
-    .tab-content.active { display: block; }
-
-    /* Entity boxes in ERD */
-    .entity-box {
-      stroke-width: 2;
-      rx: 8;
-    }
-
     @media (max-width: 768px) {
-      .lc-grid { grid-template-columns: repeat(3, 1fr); }
       .bpm-stats-bar { grid-template-columns: repeat(2, 1fr); }
     }
   </style>
@@ -197,8 +58,7 @@
   </div>
   <ul class="nav-links" style="--text-secondary: rgba(255,255,255,0.7);">
     <li><a href="index.html" style="color: rgba(255,255,255,0.6);">← Back to App</a></li>
-    <li><a href="#bpm-section" style="color: rgba(255,255,255,0.6);" class="active">BPM Lifecycle</a></li>
-    <li><a href="#erd-section" style="color: rgba(255,255,255,0.6);">ERD Diagram</a></li>
+    <li><a href="#bpmn-erd-section" style="color: var(--brand-primary); font-weight: 700;" class="active">⚡ Interactive BPMN &amp; ERD</a></li>
     <li><a href="#process-section" style="color: rgba(255,255,255,0.6);">Processes</a></li>
     <li><a href="#kpi-section" style="color: rgba(255,255,255,0.6);">Analytics</a></li>
   </ul>
@@ -221,12 +81,13 @@
         <span>📊</span> Business Process Management System
       </div>
       <h1>Savora BPM &amp; ERD<br>
-        <span style="background: var(--brand-gradient); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;">Architecture Overview</span>
+        <span style="background: var(--brand-gradient); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;">Architecture &amp; Process Studio</span>
       </h1>
-      <p style="margin-top: 16px;">Comprehensive visualization of the food delivery platform's business processes, entity relationships, and lifecycle management systems.</p>
+      <p style="margin-top: 16px;">Interactive order-to-delivery BPMN workflow simulation, draggable Chen entity-relationship diagram, and end-to-end platform operations.</p>
       <div style="display: flex; gap: 16px; margin-top: 28px; flex-wrap: wrap;">
-        <a href="#bpm-section" class="btn btn-primary">View BPM Lifecycle</a>
-        <a href="#erd-section" class="btn" style="background: rgba(255,255,255,0.12); color: white; border: 1px solid rgba(255,255,255,0.2);">View ERD Diagram</a>
+        <a href="#bpmn-erd-section" class="btn btn-primary">⚡ Explore BPMN &amp; ERD Studio</a>
+        <a href="#process-section" class="btn" style="background: rgba(255,255,255,0.12); color: white; border: 1px solid rgba(255,255,255,0.2);">⚙️ Core Processes</a>
+        <a href="#kpi-section" class="btn" style="background: rgba(255,255,255,0.12); color: white; border: 1px solid rgba(255,255,255,0.2);">📈 Analytics</a>
       </div>
     </div>
   </div>
@@ -242,7 +103,7 @@
       <div class="bpm-stat-label">Active Orders</div>
     </div>
     <div class="bpm-stat-cell">
-      <div class="bpm-stat-num" id="stat-time">32 min</div>
+      <div class="bpm-stat-num" id="stat-time">22 min</div>
       <div class="bpm-stat-label">Avg. Delivery Time</div>
     </div>
     <div class="bpm-stat-cell">
@@ -253,202 +114,23 @@
 
   <hr class="section-divider">
 
-  <!-- ==================== BPM LIFECYCLE ==================== -->
-  <section class="section" id="bpm-section">
-    <div class="section-header">
+  <!-- ==================== INTERACTIVE BPMN & ERD STUDIO ==================== -->
+  <section class="section" id="bpmn-erd-section" style="padding-top: 40px; padding-bottom: 40px;">
+    <div class="section-header" style="display: flex; justify-content: space-between; align-items: flex-start; flex-wrap: wrap; gap: 16px; margin-bottom: 24px;">
       <div>
-        <p style="color: var(--brand-primary); font-size: 0.82rem; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 6px;">Business Process Management</p>
-        <h2 class="section-title">🔄 BPM Lifecycle</h2>
-        <p class="section-subtitle">The complete 6-stage Business Process Management lifecycle for Savora</p>
+        <p style="color: var(--brand-primary); font-size: 0.82rem; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 6px;">System Architecture &amp; Data Modeling</p>
+        <h2 class="section-title">⚡ Interactive BPMN &amp; ERD Studio</h2>
+        <p class="section-subtitle">Simulate the 5-participant order-to-delivery process or freely explore and drag the Chen Entity-Relationship model.</p>
+      </div>
+      <div style="display: flex; gap: 10px; flex-wrap: wrap;">
+        <a href="erd-bpmn.html" target="_blank" class="btn btn-primary" style="display: flex; align-items: center; gap: 6px;">
+          ⛶ Open Fullscreen Studio ↗
+        </a>
       </div>
     </div>
 
-    <div class="lc-grid" id="lifecycle-grid">
-      <!-- Populated by JS -->
-    </div>
-
-    <div class="lc-detail-panel" id="lc-detail">
-      <!-- Detail panel content -->
-    </div>
-
-    <!-- Order Flow Process -->
-    <h3 style="margin-top: 48px; margin-bottom: 24px;">📦 Order Processing Flow</h3>
-    <div class="erd-svg-container">
-      <div class="process-flow" id="order-flow">
-        <!-- Populated by JS -->
-      </div>
-    </div>
-
-    <!-- Decision Points -->
-    <h3 style="margin-top: 40px; margin-bottom: 20px;">🔀 Decision Gateways</h3>
-    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 20px;">
-      <div class="card" style="padding: 20px; border-left: 4px solid #F59E0B;">
-        <div style="font-size: 1.5rem; margin-bottom: 10px;">⟨◇⟩</div>
-        <h4 style="margin-bottom: 8px;">Payment Validation</h4>
-        <p style="font-size: 0.83rem;">Gateway checks payment success → routes to order confirmation or payment retry flow</p>
-      </div>
-      <div class="card" style="padding: 20px; border-left: 4px solid #3B82F6;">
-        <div style="font-size: 1.5rem; margin-bottom: 10px;">⟨◇⟩</div>
-        <h4 style="margin-bottom: 8px;">Restaurant Availability</h4>
-        <p style="font-size: 0.83rem;">Checks if restaurant is open and can accept orders → routes to acceptance or alternative</p>
-      </div>
-      <div class="card" style="padding: 20px; border-left: 4px solid #8B5CF6;">
-        <div style="font-size: 1.5rem; margin-bottom: 10px;">⟨◇⟩</div>
-        <h4 style="margin-bottom: 8px;">Delivery Partner Assignment</h4>
-        <p style="font-size: 0.83rem;">Finds nearest available partner → assigns or queues if none available within radius</p>
-      </div>
-      <div class="card" style="padding: 20px; border-left: 4px solid #22C55E;">
-        <div style="font-size: 1.5rem; margin-bottom: 10px;">⟨◇⟩</div>
-        <h4 style="margin-bottom: 8px;">Delivery Confirmation</h4>
-        <p style="font-size: 0.83rem;">Customer OTP or GPS confirmation → triggers rating flow and loyalty points</p>
-      </div>
-    </div>
-  </section>
-
-  <hr class="section-divider">
-
-  <!-- ==================== ERD DIAGRAM ==================== -->
-  <section class="section" id="erd-section">
-    <div class="section-header">
-      <div>
-        <p style="color: var(--brand-primary); font-size: 0.82rem; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 6px;">Data Architecture</p>
-        <h2 class="section-title">🗃️ Entity Relationship Diagram</h2>
-        <p class="section-subtitle">Complete ERD of the Savora food delivery platform database</p>
-      </div>
-      <div style="display: flex; gap: 12px; align-items: center;">
-        <div style="display: flex; align-items: center; gap: 6px; font-size: 0.8rem;"><span style="display:inline-block; width:24px; height:3px; background:#3B82F6; border-radius:2px;"></span> One-to-Many</div>
-        <div style="display: flex; align-items: center; gap: 6px; font-size: 0.8rem;"><span style="display:inline-block; width:24px; height:3px; background:#8B5CF6; border-radius:2px; border-top: 2px dashed #8B5CF6; height: 0;"></span> Many-to-Many</div>
-      </div>
-    </div>
-
-    <div class="erd-wrapper">
-      <div class="erd-svg-container">
-        <svg id="erd-svg" viewBox="0 0 1100 700" xmlns="http://www.w3.org/2000/svg" style="width: 100%; height: auto; min-height: 500px;">
-          <!-- Dynamically rendered by JS -->
-        </svg>
-      </div>
-    </div>
-
-    <!-- Entity Descriptions -->
-    <h3 style="margin-top: 40px; margin-bottom: 20px;">📋 Entity Definitions</h3>
-    <div class="tabs">
-      <button class="tab-btn active" onclick="switchTab('user-tab', this)">👤 User</button>
-      <button class="tab-btn" onclick="switchTab('restaurant-tab', this)">🏪 Restaurant</button>
-      <button class="tab-btn" onclick="switchTab('order-tab', this)">📦 Order</button>
-      <button class="tab-btn" onclick="switchTab('delivery-tab', this)">🛵 Delivery</button>
-      <button class="tab-btn" onclick="switchTab('menu-tab', this)">🍽️ Menu</button>
-      <button class="tab-btn" onclick="switchTab('payment-tab', this)">💳 Payment</button>
-    </div>
-
-    <div class="tab-content active" id="user-tab">
-      <table class="data-table">
-        <thead><tr><th>Attribute</th><th>Type</th><th>Constraint</th><th>Description</th></tr></thead>
-        <tbody>
-          <tr><td><strong>user_id</strong></td><td>INT</td><td>PK, AUTO_INCREMENT</td><td>Unique user identifier</td></tr>
-          <tr><td>name</td><td>VARCHAR(100)</td><td>NOT NULL</td><td>User's full name</td></tr>
-          <tr><td>email</td><td>VARCHAR(150)</td><td>UNIQUE, NOT NULL</td><td>User's email (login identifier)</td></tr>
-          <tr><td>phone</td><td>VARCHAR(15)</td><td>UNIQUE, NOT NULL</td><td>Mobile number for OTP & notifications</td></tr>
-          <tr><td>password_hash</td><td>VARCHAR(255)</td><td>NOT NULL</td><td>bcrypt hashed password</td></tr>
-          <tr><td>profile_picture</td><td>TEXT</td><td>NULL</td><td>URL to profile image</td></tr>
-          <tr><td>loyalty_points</td><td>INT</td><td>DEFAULT 0</td><td>FoodCoins balance</td></tr>
-          <tr><td>is_active</td><td>BOOLEAN</td><td>DEFAULT TRUE</td><td>Account status flag</td></tr>
-          <tr><td>created_at</td><td>TIMESTAMP</td><td>DEFAULT NOW()</td><td>Account creation timestamp</td></tr>
-        </tbody>
-      </table>
-    </div>
-
-    <div class="tab-content" id="restaurant-tab">
-      <table class="data-table">
-        <thead><tr><th>Attribute</th><th>Type</th><th>Constraint</th><th>Description</th></tr></thead>
-        <tbody>
-          <tr><td><strong>restaurant_id</strong></td><td>INT</td><td>PK, AUTO_INCREMENT</td><td>Unique restaurant identifier</td></tr>
-          <tr><td>owner_id</td><td>INT</td><td>FK → Owner</td><td>References restaurant owner</td></tr>
-          <tr><td>name</td><td>VARCHAR(150)</td><td>NOT NULL</td><td>Restaurant name</td></tr>
-          <tr><td>cuisine_type</td><td>VARCHAR(50)</td><td>NOT NULL</td><td>Primary cuisine category</td></tr>
-          <tr><td>address</td><td>TEXT</td><td>NOT NULL</td><td>Physical restaurant address</td></tr>
-          <tr><td>latitude</td><td>DECIMAL(9,6)</td><td>NOT NULL</td><td>GPS latitude for proximity search</td></tr>
-          <tr><td>longitude</td><td>DECIMAL(9,6)</td><td>NOT NULL</td><td>GPS longitude for proximity search</td></tr>
-          <tr><td>avg_rating</td><td>DECIMAL(3,2)</td><td>DEFAULT 0.00</td><td>Computed average rating</td></tr>
-          <tr><td>delivery_fee</td><td>DECIMAL(8,2)</td><td>NOT NULL</td><td>Standard delivery fee</td></tr>
-          <tr><td>min_order</td><td>DECIMAL(8,2)</td><td>NOT NULL</td><td>Minimum order value</td></tr>
-          <tr><td>is_open</td><td>BOOLEAN</td><td>DEFAULT TRUE</td><td>Current open/closed status</td></tr>
-        </tbody>
-      </table>
-    </div>
-
-    <div class="tab-content" id="order-tab">
-      <table class="data-table">
-        <thead><tr><th>Attribute</th><th>Type</th><th>Constraint</th><th>Description</th></tr></thead>
-        <tbody>
-          <tr><td><strong>order_id</strong></td><td>VARCHAR(20)</td><td>PK</td><td>Unique order ID (e.g., FR123456)</td></tr>
-          <tr><td>user_id</td><td>INT</td><td>FK → User</td><td>Customer who placed the order</td></tr>
-          <tr><td>restaurant_id</td><td>INT</td><td>FK → Restaurant</td><td>Restaurant fulfilling the order</td></tr>
-          <tr><td>delivery_partner_id</td><td>INT</td><td>FK → DeliveryPartner, NULL</td><td>Assigned delivery agent</td></tr>
-          <tr><td>address_id</td><td>INT</td><td>FK → Address</td><td>Delivery address</td></tr>
-          <tr><td>status</td><td>ENUM</td><td>NOT NULL</td><td>placed/confirmed/preparing/picked_up/on_the_way/delivered/cancelled</td></tr>
-          <tr><td>subtotal</td><td>DECIMAL(10,2)</td><td>NOT NULL</td><td>Items total before fees</td></tr>
-          <tr><td>delivery_fee</td><td>DECIMAL(8,2)</td><td>NOT NULL</td><td>Delivery charge applied</td></tr>
-          <tr><td>tax</td><td>DECIMAL(8,2)</td><td>NOT NULL</td><td>GST/tax amount</td></tr>
-          <tr><td>grand_total</td><td>DECIMAL(10,2)</td><td>NOT NULL</td><td>Final amount charged</td></tr>
-          <tr><td>payment_method</td><td>VARCHAR(50)</td><td>NOT NULL</td><td>UPI/Card/Wallet/COD</td></tr>
-          <tr><td>created_at</td><td>TIMESTAMP</td><td>DEFAULT NOW()</td><td>Order placement time</td></tr>
-          <tr><td>delivered_at</td><td>TIMESTAMP</td><td>NULL</td><td>Actual delivery timestamp</td></tr>
-        </tbody>
-      </table>
-    </div>
-
-    <div class="tab-content" id="delivery-tab">
-      <table class="data-table">
-        <thead><tr><th>Attribute</th><th>Type</th><th>Constraint</th><th>Description</th></tr></thead>
-        <tbody>
-          <tr><td><strong>partner_id</strong></td><td>INT</td><td>PK, AUTO_INCREMENT</td><td>Unique delivery partner ID</td></tr>
-          <tr><td>name</td><td>VARCHAR(100)</td><td>NOT NULL</td><td>Partner's name</td></tr>
-          <tr><td>phone</td><td>VARCHAR(15)</td><td>UNIQUE, NOT NULL</td><td>Contact number</td></tr>
-          <tr><td>vehicle_type</td><td>ENUM</td><td>NOT NULL</td><td>bike/bicycle/car</td></tr>
-          <tr><td>vehicle_number</td><td>VARCHAR(20)</td><td>NOT NULL</td><td>Registration plate</td></tr>
-          <tr><td>current_lat</td><td>DECIMAL(9,6)</td><td>NULL</td><td>Live latitude (real-time)</td></tr>
-          <tr><td>current_lng</td><td>DECIMAL(9,6)</td><td>NULL</td><td>Live longitude (real-time)</td></tr>
-          <tr><td>is_available</td><td>BOOLEAN</td><td>DEFAULT FALSE</td><td>Available for new assignments</td></tr>
-          <tr><td>rating</td><td>DECIMAL(3,2)</td><td>DEFAULT 5.00</td><td>Average partner rating</td></tr>
-          <tr><td>total_deliveries</td><td>INT</td><td>DEFAULT 0</td><td>Cumulative delivery count</td></tr>
-        </tbody>
-      </table>
-    </div>
-
-    <div class="tab-content" id="menu-tab">
-      <table class="data-table">
-        <thead><tr><th>Attribute</th><th>Type</th><th>Constraint</th><th>Description</th></tr></thead>
-        <tbody>
-          <tr><td><strong>item_id</strong></td><td>INT</td><td>PK, AUTO_INCREMENT</td><td>Unique menu item ID</td></tr>
-          <tr><td>restaurant_id</td><td>INT</td><td>FK → Restaurant</td><td>Owning restaurant</td></tr>
-          <tr><td>category_id</td><td>INT</td><td>FK → Category</td><td>Food category (starters/main/etc)</td></tr>
-          <tr><td>name</td><td>VARCHAR(150)</td><td>NOT NULL</td><td>Item name</td></tr>
-          <tr><td>description</td><td>TEXT</td><td>NULL</td><td>Detailed description</td></tr>
-          <tr><td>price</td><td>DECIMAL(8,2)</td><td>NOT NULL</td><td>Current selling price</td></tr>
-          <tr><td>is_veg</td><td>BOOLEAN</td><td>NOT NULL</td><td>Vegetarian flag</td></tr>
-          <tr><td>is_bestseller</td><td>BOOLEAN</td><td>DEFAULT FALSE</td><td>Bestseller badge flag</td></tr>
-          <tr><td>is_available</td><td>BOOLEAN</td><td>DEFAULT TRUE</td><td>Currently available to order</td></tr>
-          <tr><td>image_url</td><td>TEXT</td><td>NULL</td><td>CDN image URL</td></tr>
-        </tbody>
-      </table>
-    </div>
-
-    <div class="tab-content" id="payment-tab">
-      <table class="data-table">
-        <thead><tr><th>Attribute</th><th>Type</th><th>Constraint</th><th>Description</th></tr></thead>
-        <tbody>
-          <tr><td><strong>payment_id</strong></td><td>VARCHAR(50)</td><td>PK</td><td>Payment gateway transaction ID</td></tr>
-          <tr><td>order_id</td><td>VARCHAR(20)</td><td>FK → Order</td><td>Associated order</td></tr>
-          <tr><td>user_id</td><td>INT</td><td>FK → User</td><td>Paying user</td></tr>
-          <tr><td>amount</td><td>DECIMAL(10,2)</td><td>NOT NULL</td><td>Transaction amount</td></tr>
-          <tr><td>method</td><td>ENUM</td><td>NOT NULL</td><td>UPI/card/wallet/COD</td></tr>
-          <tr><td>gateway</td><td>VARCHAR(50)</td><td>NOT NULL</td><td>Razorpay/Stripe/PhonePe</td></tr>
-          <tr><td>status</td><td>ENUM</td><td>NOT NULL</td><td>pending/success/failed/refunded</td></tr>
-          <tr><td>gateway_ref</td><td>VARCHAR(100)</td><td>NULL</td><td>Gateway's own reference number</td></tr>
-          <tr><td>created_at</td><td>TIMESTAMP</td><td>DEFAULT NOW()</td><td>Transaction initiation time</td></tr>
-          <tr><td>completed_at</td><td>TIMESTAMP</td><td>NULL</td><td>Transaction completion time</td></tr>
-        </tbody>
-      </table>
+    <div style="width: 100%; background: var(--bg-card); border-radius: var(--radius-xl); border: 1px solid var(--border); overflow: hidden; box-shadow: var(--shadow-md);">
+      <iframe src="erd-bpmn.html" title="Interactive BPMN &amp; ERD Studio" style="width: 100%; height: 780px; border: none; display: block;" id="bpmn-erd-frame"></iframe>
     </div>
   </section>
 
@@ -499,6 +181,7 @@
             <li style="display: flex; gap: 8px; font-size: 0.88rem;"><span style="color: var(--brand-primary); font-weight: 700;">3.</span> Escrow holds funds until delivery confirmed</li>
             <li style="display: flex; gap: 8px; font-size: 0.88rem;"><span style="color: var(--brand-primary); font-weight: 700;">4.</span> Auto-refund within 5-7 days on cancellation</li>
             <li style="display: flex; gap: 8px; font-size: 0.88rem;"><span style="color: var(--brand-primary); font-weight: 700;">5.</span> FoodCoins loyalty points awarded on delivery</li>
+            <li style="display: flex; gap: 8px; font-size: 0.88rem;"><span style="color: var(--brand-primary); font-weight: 700;">6.</span> <strong>Delivery-Time Promise:</strong> Auto-issues 50% OFF voucher if order takes >30 min</li>
           </ul>
         </div>
 
@@ -507,7 +190,7 @@
           <h3 style="margin-bottom: 12px;">Analytics &amp; Monitoring</h3>
           <ul style="list-style: none; display: flex; flex-direction: column; gap: 8px;">
             <li style="display: flex; gap: 8px; font-size: 0.88rem;"><span style="color: var(--brand-primary); font-weight: 700;">1.</span> Real-time dashboard for order volume & status</li>
-            <li style="display: flex; gap: 8px; font-size: 0.88rem;"><span style="color: var(--brand-primary); font-weight: 700;">2.</span> SLA alerts if delivery exceeds 45 minutes</li>
+            <li style="display: flex; gap: 8px; font-size: 0.88rem;"><span style="color: var(--brand-primary); font-weight: 700;">2.</span> SLA monitor: alerts & 50% off trigger if delivery exceeds 30 minutes</li>
             <li style="display: flex; gap: 8px; font-size: 0.88rem;"><span style="color: var(--brand-primary); font-weight: 700;">3.</span> Restaurant performance scoring & ranking</li>
             <li style="display: flex; gap: 8px; font-size: 0.88rem;"><span style="color: var(--brand-primary); font-weight: 700;">4.</span> ML-based demand forecasting per zone</li>
             <li style="display: flex; gap: 8px; font-size: 0.88rem;"><span style="color: var(--brand-primary); font-weight: 700;">5.</span> Automated reports & KPI tracking</li>
@@ -537,6 +220,12 @@
         <div class="kpi-trend">↑ 18% vs yesterday</div>
       </div>
       <div class="kpi-card">
+        <span class="kpi-icon">🛡️</span>
+        <div class="kpi-value">99.4%</div>
+        <div class="kpi-label">On-Time Promise Met</div>
+        <div class="kpi-trend">↑ Only 0.6% claimed 50% off</div>
+      </div>
+      <div class="kpi-card">
         <span class="kpi-icon">💰</span>
         <div class="kpi-value" id="kpi-revenue">₹48.6K</div>
         <div class="kpi-label">Revenue Today</div>
@@ -544,7 +233,7 @@
       </div>
       <div class="kpi-card">
         <span class="kpi-icon">⏱</span>
-        <div class="kpi-value">32 min</div>
+        <div class="kpi-value">22 min</div>
         <div class="kpi-label">Avg. Delivery Time</div>
         <div class="kpi-trend">↓ 3 min improvement</div>
       </div>
@@ -588,8 +277,8 @@
       <p style="font-size: 0.88rem; color: var(--text-muted); margin-bottom: 20px;">Business Process Management System · University Project Showcase</p>
       <div style="display: flex; justify-content: center; gap: 24px; flex-wrap: wrap;">
         <a href="index.html" style="color: var(--brand-primary); font-size: 0.88rem;">← Back to App</a>
-        <a href="#bpm-section" style="color: var(--brand-primary); font-size: 0.88rem;">BPM Lifecycle</a>
-        <a href="#erd-section" style="color: var(--brand-primary); font-size: 0.88rem;">ERD Diagram</a>
+        <a href="#bpmn-erd-section" style="color: var(--brand-primary); font-size: 0.88rem;">BPMN &amp; ERD Studio</a>
+        <a href="#process-section" style="color: var(--brand-primary); font-size: 0.88rem;">Core Processes</a>
         <a href="#kpi-section" style="color: var(--brand-primary); font-size: 0.88rem;">Analytics</a>
       </div>
       <p style="font-size: 0.78rem; color: var(--text-muted); margin-top: 24px;">© 2024 Savora Technologies</p>
@@ -599,361 +288,6 @@
 
 <script src="data.js"></script>
 <script>
-// ==================== BPM LIFECYCLE DATA ====================
-const LIFECYCLE_STAGES = [
-  {
-    num: 1, icon: '🔍', title: 'Process Discovery',
-    color: '#3B82F6',
-    desc: 'Identify & map all business processes',
-    details: {
-      title: '1. Process Discovery — Identifying Business Processes',
-      points: [
-        'Stakeholder interviews with restaurant owners, delivery partners & customers',
-        'As-Is process mapping using BPMN notation for all food delivery flows',
-        'Pain point identification: long wait times, payment failures, wrong orders',
-        'Benchmarking against industry standards (Swiggy, Zomato, DoorDash)',
-        'Documentation of all existing manual and automated processes'
-      ]
-    }
-  },
-  {
-    num: 2, icon: '📐', title: 'Process Design',
-    color: '#8B5CF6',
-    desc: 'Model and design optimized processes',
-    details: {
-      title: '2. Process Design — Modeling Optimal Workflows',
-      points: [
-        'To-Be process modeling with BPMN 2.0 standard diagrams',
-        'ERD design for database with normalized schema (3NF)',
-        'Microservices architecture planning: Order, Payment, Delivery, Notification services',
-        'API contract definition using OpenAPI 3.0 specification',
-        'User journey mapping for customers, restaurants and delivery partners'
-      ]
-    }
-  },
-  {
-    num: 3, icon: '🏗️', title: 'Process Modeling',
-    color: '#F59E0B',
-    desc: 'Build process models and simulations',
-    details: {
-      title: '3. Process Modeling — Simulating & Validating',
-      points: [
-        'BPMN simulation to test process performance under load',
-        'Swimlane diagrams separating Customer, Restaurant, Platform & Delivery responsibilities',
-        'Decision table modeling for pricing, delivery fee & partner assignment rules',
-        'Process bottleneck analysis using simulation data',
-        'KPI baseline establishment: target delivery time < 35 minutes'
-      ]
-    }
-  },
-  {
-    num: 4, icon: '⚙️', title: 'Process Execution',
-    color: '#FF4500',
-    desc: 'Implement and automate processes',
-    details: {
-      title: '4. Process Execution — Implementation & Automation',
-      points: [
-        'Node.js/Express REST API implementing all designed process flows',
-        'Real-time order status via WebSocket connections',
-        'Automated delivery partner assignment algorithm (proximity + rating)',
-        'Payment gateway integration (Razorpay) with webhook confirmation',
-        'Push notification service for all status transitions'
-      ]
-    }
-  },
-  {
-    num: 5, icon: '📊', title: 'Process Monitoring',
-    color: '#22C55E',
-    desc: 'Track KPIs and process performance',
-    details: {
-      title: '5. Process Monitoring — Real-Time Tracking',
-      points: [
-        'Live dashboard tracking: orders, revenue, delivery times, satisfaction',
-        'SLA breach alerts when delivery exceeds 45-minute threshold',
-        'Exception handling dashboards for failed payments & cancelled orders',
-        'Heat maps showing delivery density and restaurant performance zones',
-        'Automated daily/weekly KPI reports sent to stakeholders'
-      ]
-    }
-  },
-  {
-    num: 6, icon: '🔄', title: 'Process Optimization',
-    color: '#EC4899',
-    desc: 'Continuously improve with data insights',
-    details: {
-      title: '6. Process Optimization — Continuous Improvement',
-      points: [
-        'A/B testing of UI flows to reduce cart abandonment',
-        'ML model predicting optimal delivery partner pre-positioning',
-        'Dynamic pricing engine adjusting delivery fees by demand & distance',
-        'Process mining using order logs to identify hidden bottlenecks',
-        'Feedback loop: customer ratings directly feed restaurant rankings'
-      ]
-    }
-  }
-];
-
-const ORDER_FLOW = [
-  { icon: '👤', label: 'Customer', sub: 'Browse & Select', color: '#3B82F6', border: '#BFDBFE' },
-  { icon: '🛒', label: 'Cart', sub: 'Add Items', color: '#8B5CF6', border: '#DDD6FE' },
-  { icon: '💳', label: 'Payment', sub: 'Pay Online', color: '#F59E0B', border: '#FDE68A' },
-  { icon: '📋', label: 'Order', sub: 'Placed & Confirmed', color: '#FF4500', border: '#FED7C7' },
-  { icon: '👨‍🍳', label: 'Preparation', sub: 'Restaurant Cooks', color: '#22C55E', border: '#BBF7D0' },
-  { icon: '🛵', label: 'Pickup', sub: 'Partner Collects', color: '#06B6D4', border: '#A5F3FC' },
-  { icon: '🚴', label: 'Delivery', sub: 'On The Way', color: '#FF4500', border: '#FED7C7' },
-  { icon: '🎉', label: 'Delivered', sub: 'Confirm & Rate', color: '#22C55E', border: '#BBF7D0' }
-];
-
-// ==================== ERD SVG DATA ====================
-const ERD_ENTITIES = [
-  {
-    id: 'user', label: 'USER', x: 50, y: 50, width: 160, height: 200, color: '#3B82F6',
-    attrs: [
-      { name: 'PK user_id', key: true },
-      { name: 'name' }, { name: 'email' }, { name: 'phone' },
-      { name: 'password_hash' }, { name: 'loyalty_points' }, { name: 'created_at' }
-    ]
-  },
-  {
-    id: 'address', label: 'ADDRESS', x: 50, y: 310, width: 160, height: 160, color: '#06B6D4',
-    attrs: [
-      { name: 'PK address_id', key: true },
-      { name: 'FK user_id', key: true },
-      { name: 'street' }, { name: 'city' }, { name: 'pincode' }, { name: 'is_default' }
-    ]
-  },
-  {
-    id: 'restaurant', label: 'RESTAURANT', x: 300, y: 30, width: 175, height: 225, color: '#FF4500',
-    attrs: [
-      { name: 'PK restaurant_id', key: true },
-      { name: 'name' }, { name: 'cuisine_type' }, { name: 'address' },
-      { name: 'latitude' }, { name: 'longitude' },
-      { name: 'avg_rating' }, { name: 'delivery_fee' }
-    ]
-  },
-  {
-    id: 'menu_item', label: 'MENU_ITEM', x: 300, y: 320, width: 160, height: 195, color: '#F59E0B',
-    attrs: [
-      { name: 'PK item_id', key: true },
-      { name: 'FK restaurant_id', key: true },
-      { name: 'name' }, { name: 'price' },
-      { name: 'is_veg' }, { name: 'is_bestseller' },
-      { name: 'is_available' }
-    ]
-  },
-  {
-    id: 'order', label: 'ORDER', x: 560, y: 160, width: 165, height: 215, color: '#8B5CF6',
-    attrs: [
-      { name: 'PK order_id', key: true },
-      { name: 'FK user_id', key: true },
-      { name: 'FK restaurant_id', key: true },
-      { name: 'FK partner_id', key: true },
-      { name: 'status' }, { name: 'grand_total' },
-      { name: 'payment_method' }, { name: 'created_at' }
-    ]
-  },
-  {
-    id: 'order_item', label: 'ORDER_ITEM', x: 560, y: 440, width: 155, height: 145, color: '#EC4899',
-    attrs: [
-      { name: 'PK order_item_id', key: true },
-      { name: 'FK order_id', key: true },
-      { name: 'FK item_id', key: true },
-      { name: 'quantity' }, { name: 'unit_price' }
-    ]
-  },
-  {
-    id: 'delivery_partner', label: 'DELIVERY PARTNER', x: 800, y: 50, width: 170, height: 195, color: '#22C55E',
-    attrs: [
-      { name: 'PK partner_id', key: true },
-      { name: 'name' }, { name: 'phone' },
-      { name: 'vehicle_type' }, { name: 'current_lat' },
-      { name: 'current_lng' }, { name: 'is_available' }
-    ]
-  },
-  {
-    id: 'payment', label: 'PAYMENT', x: 800, y: 310, width: 160, height: 175, color: '#14B8A6',
-    attrs: [
-      { name: 'PK payment_id', key: true },
-      { name: 'FK order_id', key: true },
-      { name: 'amount' }, { name: 'method' },
-      { name: 'gateway' }, { name: 'status' }
-    ]
-  },
-  {
-    id: 'review', label: 'REVIEW', x: 800, y: 545, width: 155, height: 150, color: '#F59E0B',
-    attrs: [
-      { name: 'PK review_id', key: true },
-      { name: 'FK user_id', key: true },
-      { name: 'FK order_id', key: true },
-      { name: 'rating' }, { name: 'comment' }
-    ]
-  }
-];
-
-const ERD_RELATIONS = [
-  { from: 'user', fromX: 210, fromY: 120, to: 'order', toX: 560, toY: 240, label: 'places', type: '1M', color: '#3B82F6' },
-  { from: 'user', fromX: 210, fromY: 400, to: 'address', toX: 50, toY: 400, label: 'has', type: '1M', color: '#06B6D4', direct: true },
-  { from: 'restaurant', fromX: 475, fromY: 130, to: 'order', toX: 560, toY: 250, label: 'receives', type: '1M', color: '#FF4500' },
-  { from: 'restaurant', fromX: 475, fromY: 370, to: 'menu_item', toX: 300, toY: 400, label: 'offers', type: '1M', color: '#F59E0B', direct: true },
-  { from: 'order', fromX: 725, fromY: 270, to: 'delivery_partner', toX: 800, toY: 180, label: 'assigned to', type: '1M', color: '#22C55E' },
-  { from: 'order', fromX: 725, fromY: 330, to: 'payment', toX: 800, toY: 390, label: 'has', type: '11', color: '#14B8A6' },
-  { from: 'order', fromX: 640, fromY: 375, to: 'order_item', toX: 640, toY: 440, label: 'contains', type: '1M', color: '#EC4899' },
-  { from: 'order', fromX: 725, fromY: 370, to: 'review', toX: 800, toY: 590, label: 'reviewed via', type: '11', color: '#F59E0B' },
-  { from: 'menu_item', fromX: 460, fromY: 490, to: 'order_item', toX: 560, toY: 510, label: 'included in', type: '1M', color: '#EC4899' },
-  { from: 'user', fromX: 210, fromY: 150, to: 'review', toX: 800, toY: 600, label: 'writes', type: '1M', color: '#F59E0B', curved: true }
-];
-
-// ==================== RENDER FUNCTIONS ====================
-
-function renderLifecycle() {
-  const grid = document.getElementById('lifecycle-grid');
-  grid.innerHTML = LIFECYCLE_STAGES.map((stage, i) => `
-    <div class="lc-step" onclick="showLCDetail(${i})" id="lc-${i}">
-      <div class="lc-arrow">→</div>
-      <div class="lc-num" style="background: ${stage.color};">${stage.num}</div>
-      <div class="lc-icon">${stage.icon}</div>
-      <div class="lc-title">${stage.title}</div>
-      <div class="lc-sub">${stage.desc}</div>
-    </div>
-  `).join('');
-}
-
-function showLCDetail(idx) {
-  const stage = LIFECYCLE_STAGES[idx];
-  const panel = document.getElementById('lc-detail');
-
-  // Toggle off if same
-  if (panel.classList.contains('visible') && document.getElementById('lc-' + idx).classList.contains('active')) {
-    panel.classList.remove('visible');
-    document.querySelectorAll('.lc-step').forEach(s => s.classList.remove('active'));
-    return;
-  }
-
-  document.querySelectorAll('.lc-step').forEach(s => s.classList.remove('active'));
-  document.getElementById('lc-' + idx).classList.add('active');
-
-  panel.innerHTML = `
-    <h3 class="lc-detail-title" style="color: ${stage.color};">${stage.icon} ${stage.details.title}</h3>
-    <ul class="lc-detail-list">
-      ${stage.details.points.map(p => `<li>${p}</li>`).join('')}
-    </ul>
-  `;
-  panel.classList.add('visible');
-}
-
-function renderOrderFlow() {
-  const container = document.getElementById('order-flow');
-  container.innerHTML = ORDER_FLOW.map((step, i) => `
-    <div class="pf-step">
-      <div class="pf-box" style="border-color: ${step.border}; background: ${step.color}18;">
-        <div class="pf-icon">${step.icon}</div>
-        <div class="pf-label" style="color: ${step.color};">${step.label}</div>
-        <div class="pf-sub">${step.sub}</div>
-      </div>
-      ${i < ORDER_FLOW.length - 1 ? `<div class="pf-arrow" style="color: ${step.color};">→</div>` : ''}
-    </div>
-  `).join('');
-}
-
-function renderERD() {
-  const svg = document.getElementById('erd-svg');
-
-  // Render relations first (behind entities)
-  const relationsHTML = ERD_RELATIONS.map(rel => {
-    const fromEntity = ERD_ENTITIES.find(e => e.id === rel.from);
-    const toEntity = ERD_ENTITIES.find(e => e.id === rel.to);
-    if (!fromEntity || !toEntity) return '';
-
-    const x1 = rel.fromX || fromEntity.x + fromEntity.width;
-    const y1 = rel.fromY || fromEntity.y + fromEntity.height / 2;
-    const x2 = rel.toX || toEntity.x;
-    const y2 = rel.toY || toEntity.y + toEntity.height / 2;
-
-    const mx = (x1 + x2) / 2;
-    const my = (y1 + y2) / 2;
-
-    const isCurved = rel.curved;
-    const pathD = isCurved
-      ? `M ${x1} ${y1} C ${x1 + 100} ${y1}, ${x2 - 100} ${y2}, ${x2} ${y2}`
-      : `M ${x1} ${y1} L ${x2} ${y2}`;
-
-    const isDashed = rel.type === 'MM';
-
-    return `
-      <path d="${pathD}" stroke="${rel.color}" stroke-width="2" fill="none"
-        stroke-dasharray="${isDashed ? '6,3' : ''}" opacity="0.7" marker-end="url(#arrow-${rel.color.replace('#','')})"/>
-      <text x="${mx}" y="${my - 6}" font-size="9" fill="${rel.color}" text-anchor="middle" font-family="Outfit, sans-serif" font-weight="600" opacity="0.9">${rel.label}</text>
-      <text x="${mx}" y="${my + 12}" font-size="8" fill="${rel.color}" text-anchor="middle" font-family="Outfit, sans-serif" opacity="0.7">${rel.type === '1M' ? '1:N' : rel.type === '11' ? '1:1' : 'N:M'}</text>
-    `;
-  }).join('');
-
-  // Render entities
-  const entitiesHTML = ERD_ENTITIES.map(entity => {
-    const rowH = 22;
-    const headerH = 36;
-    const totalH = headerH + entity.attrs.length * rowH + 8;
-
-    const rows = entity.attrs.map((attr, i) => {
-      const y = headerH + i * rowH + 14;
-      const isKey = attr.key;
-      return `
-        <rect x="${entity.x + 1}" y="${entity.y + headerH + i * rowH}" width="${entity.width - 2}" height="${rowH}"
-          fill="${isKey ? entity.color + '22' : 'transparent'}"/>
-        <line x1="${entity.x + 1}" y1="${entity.y + headerH + i * rowH}" x2="${entity.x + entity.width - 1}" y2="${entity.y + headerH + i * rowH}"
-          stroke="${entity.color}" stroke-width="0.5" opacity="0.3"/>
-        ${isKey ? `<text x="${entity.x + 10}" y="${entity.y + y}" font-size="9.5" fill="${entity.color}" font-family="Outfit, monospace" font-weight="700">🔑 ${attr.name}</text>` :
-          `<text x="${entity.x + 10}" y="${entity.y + y}" font-size="9.5" fill="currentColor" font-family="monospace" opacity="0.85">• ${attr.name}</text>`}
-      `;
-    }).join('');
-
-    return `
-      <!-- Entity: ${entity.label} -->
-      <rect x="${entity.x}" y="${entity.y}" width="${entity.width}" height="${headerH + entity.attrs.length * rowH + 4}"
-        rx="8" ry="8" fill="${entity.color}15" stroke="${entity.color}" stroke-width="2.5"/>
-      <rect x="${entity.x}" y="${entity.y}" width="${entity.width}" height="${headerH}"
-        rx="8" ry="8" fill="${entity.color}" opacity="0.9"/>
-      <rect x="${entity.x}" y="${entity.y + headerH - 8}" width="${entity.width}" height="8" fill="${entity.color}" opacity="0.9"/>
-      <text x="${entity.x + entity.width/2}" y="${entity.y + 24}" font-size="11" fill="white"
-        text-anchor="middle" font-family="Outfit, sans-serif" font-weight="800" letter-spacing="0.5">${entity.label}</text>
-      ${rows}
-    `;
-  }).join('');
-
-  // Arrow markers
-  const uniqueColors = [...new Set(ERD_RELATIONS.map(r => r.color))];
-  const defs = `<defs>
-    ${uniqueColors.map(c => `
-      <marker id="arrow-${c.replace('#','')}" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto">
-        <path d="M0,0 L0,6 L8,3 z" fill="${c}" opacity="0.8"/>
-      </marker>
-    `).join('')}
-  </defs>`;
-
-  svg.innerHTML = defs + `<g id="erd-relations">${relationsHTML}</g><g id="erd-entities">${entitiesHTML}</g>`;
-
-  // Apply theme colors to text
-  updateERDTheme();
-}
-
-function updateERDTheme() {
-  const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
-  const svg = document.getElementById('erd-svg');
-  if (svg) {
-    svg.querySelectorAll('text[fill="currentColor"]').forEach(t => {
-      t.setAttribute('fill', isDark ? '#e4e4e7' : '#27272a');
-    });
-  }
-}
-
-// ==================== TABS ====================
-
-function switchTab(tabId, btn) {
-  document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
-  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-  document.getElementById(tabId).classList.add('active');
-  btn.classList.add('active');
-}
-
 // ==================== THEME ====================
 
 const Theme = {
@@ -963,7 +297,6 @@ const Theme = {
     document.documentElement.setAttribute('data-theme', theme);
     const icon = document.getElementById('theme-icon');
     if (icon) icon.textContent = theme === 'dark' ? '☀️' : '🌙';
-    updateERDTheme();
   },
   toggle() { Theme.set(Theme.get() === 'dark' ? 'light' : 'dark'); },
   init() { Theme.set(Theme.get()); }
@@ -973,9 +306,6 @@ const Theme = {
 
 document.addEventListener('DOMContentLoaded', () => {
   Theme.init();
-  renderLifecycle();
-  renderOrderFlow();
-  renderERD();
 
   // Animate KPI numbers
   animateNumbers();

@@ -17,12 +17,14 @@ Write-Host "  🌐  App URL  : " -NoNewline -ForegroundColor Cyan
 Write-Host "http://localhost:$port" -ForegroundColor Yellow
 Write-Host "  📊  BPM/ERD : " -NoNewline -ForegroundColor Cyan
 Write-Host "http://localhost:$port/bpm.html" -ForegroundColor Yellow
+Write-Host "  ⚡  Canvas  : " -NoNewline -ForegroundColor Cyan
+Write-Host "http://localhost:$port/erd-bpmn.html" -ForegroundColor Yellow
 Write-Host ""
 Write-Host "  Press Ctrl+C to stop the server" -ForegroundColor DarkGray
 Write-Host ""
 
 # Auto-open browser
-Start-Process "http://localhost:$port"
+try { Start-Process "http://localhost:$port" -ErrorAction SilentlyContinue } catch {}
 
 $mimeTypes = @{
     ".html" = "text/html; charset=utf-8"

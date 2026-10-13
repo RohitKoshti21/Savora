@@ -264,6 +264,72 @@ function clearCart() {
   }
 }
 
+// ==================== COUPONS & DELIVERY PROMISE ====================
+function isPromiseVoucherUnlocked() {
+  return localStorage.getItem('fr_promise_unlocked') === 'true';
+}
+
+let activeCoupon = localStorage.getItem('fr_active_coupon') || null;
+// Invalidate PROMISE50 if user does not actually have an unlocked voucher
+if (activeCoupon === 'PROMISE50' && !isPromiseVoucherUnlocked()) {
+  activeCoupon = null;
+  localStorage.removeItem('fr_active_coupon');
+}
+
+function applyCoupon(customCode) {
+  const input = document.getElementById('coupon-code-input');
+  const code = (customCode || (input ? input.value : '') || '').trim().toUpperCase();
+  if (!code) {
+    showToast('Please enter a coupon code', 'info');
+    return;
+  }
+  if (code === 'PROMISE50') {
+    if (!isPromiseVoucherUnlocked()) {
+      showToast('❌ Not eligible: PROMISE50 is strictly for customers whose delivery exceeded 30 minutes!', 'error');
+      if (input) input.value = '';
+      return;
+    }
+    activeCoupon = 'PROMISE50';
+    localStorage.setItem('fr_active_coupon', 'PROMISE50');
+    showToast('🎉 Delivery-Time Promise: 50% OFF applied!', 'success');
+    updateCartUI();
+  } else {
+    showToast('Invalid coupon code. Only verified late-delivery vouchers are accepted.', 'error');
+  }
+}
+
+function removeCoupon() {
+  activeCoupon = null;
+  localStorage.removeItem('fr_active_coupon');
+  const input = document.getElementById('coupon-code-input');
+  if (input) input.value = '';
+  showToast('Coupon removed', 'info');
+  updateCartUI();
+}
+
+async function claimLatePromise(orderId) {
+  const order = await API.getOrder(orderId);
+  if (!order) return;
+  if (!order.isLate) {
+    showToast('🔒 Voucher Locked: This order was delivered on time! The 50% discount only unlocks if delivery takes >30 mins.', 'info');
+    return;
+  }
+  localStorage.setItem('fr_promise_unlocked', 'true');
+  localStorage.setItem('fr_claimed_' + orderId, 'true');
+  activeCoupon = 'PROMISE50';
+  localStorage.setItem('fr_active_coupon', 'PROMISE50');
+  showToast('🎉 50% OFF Promise Voucher Claimed! Code PROMISE50 is unlocked for your next order.', 'success');
+
+  const btn = document.getElementById('claim-promise-btn-' + orderId);
+  if (btn) {
+    btn.textContent = '✅ 50% OFF Claimed · Code: PROMISE50';
+    btn.className = 'btn btn-sm btn-primary';
+    btn.disabled = true;
+    btn.style.boxShadow = 'none';
+  }
+  updateCartUI();
+}
+
 function updateCartUI() {
   Cart.updateBadge();
 
@@ -285,8 +351,19 @@ function updateCartUI() {
 
   const subtotal = Cart.getTotal();
   const deliveryFee = cartRestaurantData ? cartRestaurantData.deliveryFee : 30;
-  const tax = Math.round(subtotal * 0.05);
-  const grand = subtotal + deliveryFee + tax;
+
+  // Calculate 50% discount if PROMISE50 active and verified
+  let discount = 0;
+  if (activeCoupon === 'PROMISE50' && isPromiseVoucherUnlocked()) {
+    discount = Math.round(subtotal * 0.5);
+  } else if (activeCoupon === 'PROMISE50' && !isPromiseVoucherUnlocked()) {
+    activeCoupon = null;
+    localStorage.removeItem('fr_active_coupon');
+  }
+
+  const discountedSubtotal = Math.max(0, subtotal - discount);
+  const tax = Math.round(discountedSubtotal * 0.05);
+  const grand = discountedSubtotal + deliveryFee + tax;
 
   itemsList.innerHTML = cart.items.map(item => `
     <div class="cart-item">
@@ -304,6 +381,34 @@ function updateCartUI() {
   if (footer) {
     footer.style.display = 'block';
     document.getElementById('cart-subtotal').textContent = '₹' + subtotal;
+
+    // Handle discount row and coupon badge
+    const discountRow = document.getElementById('cart-discount-row');
+    const discountEl = document.getElementById('cart-discount');
+    const couponPill = document.getElementById('coupon-applied-pill');
+    const couponInput = document.getElementById('coupon-code-input');
+    const hintEl = document.getElementById('coupon-status-hint');
+
+    if (hintEl) {
+      if (isPromiseVoucherUnlocked()) {
+        hintEl.className = 'coupon-status-hint unlocked';
+        hintEl.innerHTML = `<span>🎁 50% Voucher Unlocked! <a href="javascript:void(0)" onclick="applyCoupon('PROMISE50')" style="color:var(--brand-primary);font-weight:700;text-decoration:underline;margin-left:4px;">Apply Code</a></span>`;
+      } else {
+        hintEl.className = 'coupon-status-hint locked';
+        hintEl.innerHTML = `<span>🔒 PROMISE50 locked (only available if an order exceeded 30 min)</span>`;
+      }
+    }
+
+    if (activeCoupon === 'PROMISE50' && discount > 0) {
+      if (discountRow) discountRow.style.display = 'flex';
+      if (discountEl) discountEl.textContent = '-₹' + discount;
+      if (couponPill) couponPill.style.display = 'flex';
+      if (couponInput) couponInput.value = 'PROMISE50';
+    } else {
+      if (discountRow) discountRow.style.display = 'none';
+      if (couponPill) couponPill.style.display = 'none';
+    }
+
     document.getElementById('cart-delivery-fee').textContent = '₹' + deliveryFee;
     document.getElementById('cart-tax').textContent = '₹' + tax;
     document.getElementById('cart-grand-total').textContent = '₹' + grand;
@@ -328,7 +433,9 @@ async function placeOrder() {
   try {
     const subtotal = Cart.getTotal();
     const deliveryFee = cartRestaurantData ? cartRestaurantData.deliveryFee : 30;
-    const tax = Math.round(subtotal * 0.05);
+    const discount = activeCoupon === 'PROMISE50' ? Math.round(subtotal * 0.5) : 0;
+    const discountedSubtotal = Math.max(0, subtotal - discount);
+    const tax = Math.round(discountedSubtotal * 0.05);
 
     const orderData = {
       userId: user.id,
@@ -336,9 +443,11 @@ async function placeOrder() {
       restaurantName: cartRestaurantData ? cartRestaurantData.name : 'Restaurant',
       items: cart.items,
       subtotal,
+      discount,
+      coupon: activeCoupon || null,
       deliveryFee,
       tax,
-      grandTotal: subtotal + deliveryFee + tax,
+      grandTotal: discountedSubtotal + deliveryFee + tax,
       address: user.address || '123 Main Street, Mumbai, Maharashtra',
       paymentMethod: 'Online Payment'
     };
@@ -347,6 +456,15 @@ async function placeOrder() {
     Cart.clear();
     cartRestaurantData = null;
     currentOrderId = order.id;
+
+    // Clear coupon and consume unlocked late promise voucher after using it
+    if (activeCoupon) {
+      if (activeCoupon === 'PROMISE50') {
+        localStorage.removeItem('fr_promise_unlocked');
+      }
+      activeCoupon = null;
+      localStorage.removeItem('fr_active_coupon');
+    }
 
     showToast('🎉 Order placed! Tracking live...', 'success');
     navigateTo('tracking', { orderId: order.id });
@@ -418,16 +536,47 @@ const STATUS_STEPS = [
 function renderTrackingCard(order) {
   const currentIdx = STATUS_STEPS.findIndex(s => s.key === order.status);
   const currentStep = STATUS_STEPS[currentIdx] || STATUS_STEPS[0];
+  const isLate = !!order.isLate;
+  const isClaimed = localStorage.getItem('fr_claimed_' + order.id) === 'true';
 
-  const estTime = new Date(order.estimatedDelivery);
-  const minsLeft = Math.max(0, Math.round((estTime - Date.now()) / 60000));
+  // Realistic ETA text based on delay status & progress stage
+  let etaText = '';
+  if (isLate) {
+    if (order.status === 'on_the_way') {
+      etaText = '⚠️ Heavy traffic delay: 12–15 mins away (ETA >30 min SLA breach)';
+    } else if (order.status === 'picked_up') {
+      etaText = '⚠️ Slow transit: ~18 mins away (Exceeding 30 min promise)';
+    } else if (order.status === 'preparing') {
+      etaText = '⚠️ High kitchen rush: Delayed ~24 mins';
+    } else if (order.status === 'confirmed') {
+      etaText = '⏱ 26–30 mins away (Peak hour rush)';
+    } else if (order.status === 'placed') {
+      etaText = '⏱ 32–36 mins away (Delay expected)';
+    } else if (order.status === 'delivered') {
+      etaText = '🚨 Delivered Late (34 mins) — 30-Min Promise Breached!';
+    }
+  } else {
+    if (order.status === 'on_the_way') {
+      etaText = '⏱ 6–8 mins away';
+    } else if (order.status === 'picked_up') {
+      etaText = '⏱ 10–12 mins away';
+    } else if (order.status === 'preparing') {
+      etaText = '⏱ 14–16 mins away';
+    } else if (order.status === 'confirmed') {
+      etaText = '⏱ 18–20 mins away';
+    } else if (order.status === 'placed') {
+      etaText = '⏱ 20–24 mins away';
+    } else if (order.status === 'delivered') {
+      etaText = '🎉 Delivered On-Time in 21 mins! Promise SLA Met.';
+    }
+  }
 
   document.getElementById('tracking-card').innerHTML = `
     <div class="order-status-header">
       <div class="status-icon">${currentStep.icon}</div>
       <h2>${currentStep.label}</h2>
       <p style="color: var(--text-muted); margin-top: 6px;">${order.restaurantName} · Order #${order.id}</p>
-      ${order.status !== 'delivered' ? `<p style="margin-top: 12px; font-weight: 700; color: var(--brand-primary);">⏱ ${minsLeft > 0 ? minsLeft + ' mins away' : 'Arriving any moment!'}</p>` : ''}
+      ${order.status !== 'delivered' ? `<p style="margin-top: 12px; font-weight: 700; color: ${isLate ? '#e03131' : 'var(--brand-primary)'};">${etaText}</p>` : `<p style="margin-top: 12px; font-weight: 700; color: ${isLate ? '#e03131' : 'var(--success)'};">${etaText}</p>`}
     </div>
 
     <div class="tracking-steps" id="tracking-steps-${order.id}">
@@ -451,9 +600,59 @@ function renderTrackingCard(order) {
       }).join('')}
     </div>
 
-    <div style="margin-top: 32px; padding: 20px; background: var(--bg-muted); border-radius: var(--radius-md);">
+    <!-- Delivery-Time Promise Assurance Card -->
+    <div class="promise-tracking-card ${isLate ? 'late' : 'ontime'}">
+      <div style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 10px;">
+        <div style="display: flex; align-items: center; gap: 10px;">
+          <span style="font-size: 1.8rem;">${isLate ? '🚨' : '⏱️'}</span>
+          <div>
+            <div style="font-weight: 800; font-size: 0.95rem; color: ${isLate ? '#e03131' : 'var(--brand-primary)'};">
+              Savora Delivery-Time Promise ${isLate ? '(SLA Breached)' : '(Guarantee Active)'}
+            </div>
+            <div style="font-size: 0.8rem; color: var(--text-muted);">
+              Guaranteed arrival under 30 minutes, or enjoy 50% OFF your next order!
+            </div>
+          </div>
+        </div>
+        <span style="padding: 4px 10px; border-radius: 20px; font-size: 0.76rem; font-weight: 700; background: ${isLate ? 'rgba(239, 68, 68, 0.15)' : 'rgba(34, 197, 94, 0.15)'}; color: ${isLate ? '#ef4444' : 'var(--success)'};">
+          ${isLate ? '⚠️ Delayed (>30 Min)' : '🟢 On-Time Guarantee (<30 Min)'}
+        </span>
+      </div>
+
+      <div style="border-top: 1px dashed rgba(232,89,12,0.25); padding-top: 12px; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 10px;">
+        <div style="font-size: 0.82rem; color: var(--text-secondary); max-width: 420px;">
+          ${isLate 
+            ? '<strong>Promise SLA Breached!</strong> Your delivery exceeded 30 mins. You are eligible to claim a 50% OFF voucher for your next order.' 
+            : '<strong>On-Time Guarantee:</strong> Your order is safely within the 30-min window. The 50% voucher remains locked.'}
+        </div>
+        <div>
+          ${isLate 
+            ? (isClaimed
+                ? `<button class="btn btn-sm btn-primary" disabled style="background: #22c55e; border-color: #22c55e; font-size: 0.8rem;">✅ 50% OFF Claimed · Code: PROMISE50</button>`
+                : `<button id="claim-promise-btn-${order.id}" class="btn btn-sm btn-primary pulse-claim-btn" style="font-size: 0.82rem; font-weight: 700; background: linear-gradient(135deg, #e8590c, #f76707);" onclick="claimLatePromise('${order.id}')">🎁 Claim 50% OFF Late Voucher</button>`)
+            : `<button class="btn btn-sm btn-outline" style="font-size: 0.8rem; opacity: 0.7; cursor: not-allowed; border-color: var(--border); color: var(--text-muted);" onclick="showToast('🔒 Voucher Locked: This order is on time! Voucher unlocks only if delivery exceeds 30 minutes.', 'info')">🔒 50% Voucher Locked (On-Time)</button>`
+          }
+        </div>
+      </div>
+
+      <!-- Simulation Testing Controls -->
+      <div class="sim-controls-bar">
+        <span style="font-size: 0.78rem; color: var(--text-muted);">
+          🎲 <strong>Test Simulation:</strong> ${isLate ? '<span style="color:#e03131; font-weight:700;">Randomly Set to LATE (>30m)</span>' : '<span style="color:#2f9e44; font-weight:700;">Randomly Set to ON-TIME (<30m)</span>'}
+        </span>
+        <div style="display: flex; gap: 6px;">
+          <button class="btn btn-sm btn-outline" style="font-size: 0.74rem; padding: 4px 10px;" onclick="toggleDelayTest('${order.id}')">
+            ⇄ Toggle Late / On-Time
+          </button>
+          ${order.status !== 'delivered' ? `<button class="btn btn-sm btn-outline" style="font-size: 0.74rem; padding: 4px 10px;" onclick="instantDeliverTest('${order.id}')">⚡ Fast-Forward Delivered</button>` : ''}
+        </div>
+      </div>
+    </div>
+
+    <div style="margin-top: 24px; padding: 20px; background: var(--bg-muted); border-radius: var(--radius-md);">
       <h4 style="margin-bottom: 12px;">Order Summary</h4>
       ${order.items.map(i => `<div style="display:flex; justify-content:space-between; font-size:0.88rem; margin-bottom:6px;"><span>${i.name} × ${i.quantity}</span><span style="font-weight:600;">₹${i.price * i.quantity}</span></div>`).join('')}
+      ${order.discount ? `<div style="display:flex; justify-content:space-between; font-size:0.88rem; color:var(--success); margin-bottom:6px; font-weight:700;"><span>🏷️ 50% Promise Discount</span><span>-₹${order.discount}</span></div>` : ''}
       <div style="border-top: 1px solid var(--border); margin-top: 12px; padding-top: 12px; display:flex; justify-content:space-between; font-weight:800;">
         <span>Grand Total</span>
         <span style="color: var(--brand-primary);">₹${order.grandTotal}</span>
@@ -465,6 +664,28 @@ function renderTrackingCard(order) {
       <button class="btn btn-primary" onclick="navigateTo('home')">Back to Home</button>
     </div>
   `;
+}
+
+function toggleDelayTest(orderId) {
+  API.toggleOrderDelay(orderId);
+  API.getOrder(orderId).then(o => {
+    if (o) {
+      renderTrackingCard(o);
+      showToast(o.isLate ? '⚠️ Switched to LATE delivery simulation (>30 min)' : '🟢 Switched to ON-TIME delivery (<30 min)', 'info');
+      updateCartUI();
+    }
+  });
+}
+
+function instantDeliverTest(orderId) {
+  API.instantDeliver(orderId);
+  API.getOrder(orderId).then(o => {
+    if (o) {
+      renderTrackingCard(o);
+      showToast('⚡ Order fast-forwarded to Delivered!', 'success');
+      updateCartUI();
+    }
+  });
 }
 
 // ==================== ORDERS LIST ====================
@@ -505,14 +726,23 @@ async function loadOrdersPage() {
       picked_up: '🛵 Picked Up', on_the_way: '🚴 On the Way', delivered: '🎉 Delivered', cancelled: '❌ Cancelled'
     };
     const color = statusColors[order.status] || '#999';
+    const isLate = !!order.isLate;
+    const isClaimed = localStorage.getItem('fr_claimed_' + order.id) === 'true';
+
     return `
       <div class="card" style="padding: 20px; margin-bottom: 16px; cursor: pointer;" onclick="navigateTo('tracking', { orderId: '${order.id}' })">
-        <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 12px;">
+        <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 12px; flex-wrap: wrap; gap: 8px;">
           <div>
             <h3 style="margin-bottom: 4px;">${order.restaurantName}</h3>
             <p style="font-size: 0.82rem; color: var(--text-muted);">Order #${order.id} · ${new Date(order.createdAt).toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit' })}</p>
           </div>
-          <span style="background: ${color}20; color: ${color}; padding: 4px 12px; border-radius: var(--radius-full); font-size: 0.8rem; font-weight: 700; white-space: nowrap;">${statusLabels[order.status] || order.status}</span>
+          <div style="display: flex; align-items: center; gap: 8px; flex-wrap: wrap;">
+            ${isLate 
+              ? `<span style="background: rgba(239, 68, 68, 0.15); color: #ef4444; padding: 4px 10px; border-radius: var(--radius-full); font-size: 0.75rem; font-weight: 700;">🚨 Delayed (>30m) ${isClaimed ? '· 50% Claimed' : '· 50% Eligible'}</span>` 
+              : `<span style="background: rgba(34, 197, 94, 0.15); color: #22c55e; padding: 4px 10px; border-radius: var(--radius-full); font-size: 0.75rem; font-weight: 700;">🟢 On-Time (21m)</span>`
+            }
+            <span style="background: ${color}20; color: ${color}; padding: 4px 12px; border-radius: var(--radius-full); font-size: 0.8rem; font-weight: 700; white-space: nowrap;">${statusLabels[order.status] || order.status}</span>
+          </div>
         </div>
         <p style="font-size: 0.85rem; color: var(--text-secondary); margin-bottom: 12px;">${order.items.map(i => `${i.name} ×${i.quantity}`).join(', ')}</p>
         <div style="display: flex; justify-content: space-between; align-items: center;">

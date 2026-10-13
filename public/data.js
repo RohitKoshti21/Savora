@@ -3,56 +3,56 @@
 const RESTAURANTS = [
   {
     id: 1, name: "Spice Garden", cuisine: "Indian", rating: 4.8,
-    deliveryTime: "25-35 min", minOrder: 150, deliveryFee: 30,
+    deliveryTime: "18-24 min", minOrder: 150, deliveryFee: 30,
     image: "https://images.unsplash.com/photo-1585937421612-70a008356fbe?w=600&q=80",
     tags: ["Biryani", "Curry", "North Indian"], isOpen: true, distance: "1.2 km", promoted: true,
     description: "Authentic flavors from the heart of North India. Our master chefs bring you traditional recipes with a modern twist."
   },
   {
     id: 2, name: "Dragon Wok", cuisine: "Chinese", rating: 4.5,
-    deliveryTime: "30-40 min", minOrder: 200, deliveryFee: 40,
+    deliveryTime: "20-26 min", minOrder: 200, deliveryFee: 40,
     image: "https://images.unsplash.com/photo-1563245372-f21724e3856d?w=600&q=80",
     tags: ["Noodles", "Dim Sum", "Fried Rice"], isOpen: true, distance: "2.1 km", promoted: false,
     description: "Authentic Chinese cuisine with bold flavors and fresh ingredients wok-tossed to perfection."
   },
   {
     id: 3, name: "Burger Republic", cuisine: "American", rating: 4.6,
-    deliveryTime: "20-30 min", minOrder: 120, deliveryFee: 25,
+    deliveryTime: "15-22 min", minOrder: 120, deliveryFee: 25,
     image: "https://images.unsplash.com/photo-1568901346375-23c9450c58cd?w=600&q=80",
     tags: ["Burgers", "Fries", "Shakes"], isOpen: true, distance: "0.8 km", promoted: true,
     description: "Premium smash burgers with house-ground beef, artisan buns and secret sauce. Voted #1 burger joint 2024."
   },
   {
     id: 4, name: "Pizza Palazzo", cuisine: "Italian", rating: 4.7,
-    deliveryTime: "35-45 min", minOrder: 250, deliveryFee: 35,
+    deliveryTime: "18-25 min", minOrder: 250, deliveryFee: 35,
     image: "https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?w=600&q=80",
     tags: ["Pizza", "Pasta", "Garlic Bread"], isOpen: true, distance: "1.8 km", promoted: false,
     description: "Stone-baked artisan pizzas with imported Italian ingredients. Our dough ferments for 72 hours for the perfect crust."
   },
   {
     id: 5, name: "Sushi Sakura", cuisine: "Japanese", rating: 4.9,
-    deliveryTime: "40-50 min", minOrder: 300, deliveryFee: 50,
+    deliveryTime: "20-28 min", minOrder: 300, deliveryFee: 50,
     image: "https://images.unsplash.com/photo-1617196034183-421b4040ed20?w=600&q=80",
     tags: ["Sushi", "Ramen", "Tempura"], isOpen: false, distance: "3.5 km", promoted: false,
     description: "Premium Japanese cuisine crafted by a Michelin-starred chef. Only the freshest ingredients sourced daily."
   },
   {
     id: 6, name: "Taco Fiesta", cuisine: "Mexican", rating: 4.4,
-    deliveryTime: "25-35 min", minOrder: 180, deliveryFee: 30,
+    deliveryTime: "16-24 min", minOrder: 180, deliveryFee: 30,
     image: "https://images.unsplash.com/photo-1551504734-5ee1c4a1479b?w=600&q=80",
     tags: ["Tacos", "Burritos", "Nachos"], isOpen: true, distance: "1.5 km", promoted: false,
     description: "Vibrant Mexican street food with bold spices, fresh salsas and handmade tortillas every single day."
   },
   {
     id: 7, name: "The Kebab Corner", cuisine: "Middle Eastern", rating: 4.3,
-    deliveryTime: "20-30 min", minOrder: 200, deliveryFee: 25,
+    deliveryTime: "15-22 min", minOrder: 200, deliveryFee: 25,
     image: "https://images.unsplash.com/photo-1529006557810-274b9b2fc783?w=600&q=80",
     tags: ["Kebabs", "Shawarma", "Hummus"], isOpen: true, distance: "1.0 km", promoted: false,
     description: "Flame-grilled kebabs and authentic Middle Eastern flavors, marinated overnight for maximum taste."
   },
   {
     id: 8, name: "Green Bowl", cuisine: "Healthy", rating: 4.6,
-    deliveryTime: "15-25 min", minOrder: 180, deliveryFee: 20,
+    deliveryTime: "12-18 min", minOrder: 180, deliveryFee: 20,
     image: "https://images.unsplash.com/photo-1512621776951-a57141f2eefd?w=600&q=80",
     tags: ["Salads", "Bowls", "Smoothies"], isOpen: true, distance: "0.5 km", promoted: true,
     description: "Nutritious and delicious power bowls, smoothies, and salads. Fuel your body the right way."
@@ -140,13 +140,18 @@ const API = {
   async placeOrder(orderData) {
     await apiDelay(600);
     const orderId = 'FR' + Date.now().toString().slice(-6);
+    // Randomly assign ~45% of orders to experience a late delivery
+    const isLateOrder = Math.random() < 0.45;
+    const estMinutes = isLateOrder ? 35 : 22;
+
     const order = {
       id: orderId,
       ...orderData,
       status: 'placed',
+      isLate: isLateOrder,
       statusHistory: [{ status: 'placed', time: new Date().toISOString(), message: 'Order placed successfully!' }],
       createdAt: new Date().toISOString(),
-      estimatedDelivery: new Date(Date.now() + 35 * 60000).toISOString()
+      estimatedDelivery: new Date(Date.now() + estMinutes * 60000).toISOString()
     };
     // Save to localStorage
     const orders = JSON.parse(localStorage.getItem('fr_orders') || '[]');
@@ -166,25 +171,80 @@ const API = {
     return JSON.parse(localStorage.getItem('fr_orders') || '[]');
   },
   _simulateOrderProgress(orderId) {
-    const statusFlow = [
-      { status: 'confirmed', delay: 5000, message: '✅ Restaurant confirmed your order!' },
-      { status: 'preparing', delay: 15000, message: '👨‍🍳 Chef is preparing your food...' },
-      { status: 'picked_up', delay: 28000, message: '🛵 Delivery partner Rahul picked up your order' },
-      { status: 'on_the_way', delay: 35000, message: '🚴 Rahul is on the way! 10 mins away.' },
-      { status: 'delivered', delay: 50000, message: '🎉 Order delivered! Enjoy your meal!' }
+    const orders = JSON.parse(localStorage.getItem('fr_orders') || '[]');
+    const order = orders.find(o => o.id === orderId);
+    const isLate = order ? order.isLate : false;
+
+    // Normal On-Time Flow (Promise Met)
+    const onTimeFlow = [
+      { status: 'confirmed', delay: 4000, message: '✅ Restaurant confirmed your order!' },
+      { status: 'preparing', delay: 12000, message: '👨‍🍳 Chef is preparing your food...' },
+      { status: 'picked_up', delay: 24000, message: '🛵 Delivery partner Rahul picked up your order' },
+      { status: 'on_the_way', delay: 32000, message: '🚴 Rahul is on the way! 6–8 mins away.' },
+      { status: 'delivered', delay: 46000, message: '🎉 Order delivered on time in 21 mins! Enjoy your meal!' }
     ];
+
+    // Late Delivery Flow (Promise Breached -> 50% Coupon Claimable)
+    const lateFlow = [
+      { status: 'confirmed', delay: 4000, message: '✅ Restaurant confirmed your order!' },
+      { status: 'preparing', delay: 12000, message: '👨‍🍳 Kitchen rush: Order preparation delayed.' },
+      { status: 'picked_up', delay: 24000, message: '🛵 Delivery partner picked up food from restaurant.' },
+      { status: 'on_the_way', delay: 32000, message: '⚠️ Heavy traffic & rain delay: Delivery time will exceed 30 mins!' },
+      { status: 'delivered', delay: 46000, message: '🚨 Delivered late (34 mins)! 30-Min Promise breached. You can now claim 50% OFF!' }
+    ];
+
+    const statusFlow = isLate ? lateFlow : onTimeFlow;
+
     statusFlow.forEach(({ status, delay, message }) => {
       setTimeout(() => {
-        const orders = JSON.parse(localStorage.getItem('fr_orders') || '[]');
-        const order = orders.find(o => o.id === orderId);
-        if (order) {
-          order.status = status;
-          order.statusHistory.push({ status, time: new Date().toISOString(), message });
-          localStorage.setItem('fr_orders', JSON.stringify(orders));
+        const storedOrders = JSON.parse(localStorage.getItem('fr_orders') || '[]');
+        const target = storedOrders.find(o => o.id === orderId);
+        if (target) {
+          target.status = status;
+          target.statusHistory.push({ status, time: new Date().toISOString(), message });
+          localStorage.setItem('fr_orders', JSON.stringify(storedOrders));
           window.dispatchEvent(new CustomEvent('orderStatusUpdate', { detail: { orderId, status, message } }));
         }
       }, delay);
     });
+  },
+  toggleOrderDelay(orderId) {
+    const orders = JSON.parse(localStorage.getItem('fr_orders') || '[]');
+    const target = orders.find(o => o.id === orderId);
+    if (target) {
+      target.isLate = !target.isLate;
+      const estMinutes = target.isLate ? 35 : 22;
+      target.estimatedDelivery = new Date(Date.now() + estMinutes * 60000).toISOString();
+      const lastHistory = target.statusHistory[target.statusHistory.length - 1];
+      if (lastHistory) {
+        if (target.status === 'delivered') {
+          lastHistory.message = target.isLate
+            ? '🚨 Delivered late (34 mins)! 30-Min Promise breached. You can now claim 50% OFF!'
+            : '🎉 Order delivered on time in 21 mins! Enjoy your meal!';
+        } else {
+          lastHistory.message = target.isLate
+            ? '⚠️ Heavy traffic & delay: Delivery time will exceed 30 mins!'
+            : '🚴 Rahul is on the way! Arriving under 30 mins.';
+        }
+      }
+      localStorage.setItem('fr_orders', JSON.stringify(orders));
+      window.dispatchEvent(new CustomEvent('orderStatusUpdate', { detail: { orderId, status: target.status, message: 'Delay status toggled' } }));
+    }
+  },
+  instantDeliver(orderId) {
+    const orders = JSON.parse(localStorage.getItem('fr_orders') || '[]');
+    const target = orders.find(o => o.id === orderId);
+    if (target) {
+      target.status = 'delivered';
+      const msg = target.isLate 
+        ? '🚨 Delivered late (34 mins)! 30-Min Promise breached. You can now claim 50% OFF!'
+        : '🎉 Order delivered on time in 21 mins! SLA met.';
+      // remove any previous delivered history entry to avoid duplicate
+      target.statusHistory = target.statusHistory.filter(h => h.status !== 'delivered');
+      target.statusHistory.push({ status: 'delivered', time: new Date().toISOString(), message: msg });
+      localStorage.setItem('fr_orders', JSON.stringify(orders));
+      window.dispatchEvent(new CustomEvent('orderStatusUpdate', { detail: { orderId, status: 'delivered', message: msg } }));
+    }
   },
   login(email, password) {
     // Demo login

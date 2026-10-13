@@ -684,6 +684,139 @@ a { text-decoration: none; color: inherit; }
 .cart-total-row.grand { font-weight: 800; font-size: 1rem; color: var(--text-primary); }
 .cart-total-row span:last-child { color: var(--brand-primary); }
 
+/* Delivery-Time Promise & Coupon Styles */
+.promise-cart-badge {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 12px;
+  background: linear-gradient(135deg, rgba(232,89,12,0.1), rgba(255,138,76,0.05));
+  border: 1px solid rgba(232,89,12,0.25);
+  border-radius: var(--radius-md);
+  margin-bottom: 12px;
+  font-size: 0.78rem;
+  line-height: 1.35;
+}
+.promise-cart-badge strong { color: var(--brand-primary); }
+
+.coupon-section {
+  margin-bottom: 14px;
+  padding-bottom: 12px;
+  border-bottom: 1px dashed var(--border);
+}
+.coupon-input-wrap {
+  display: flex;
+  gap: 6px;
+}
+.coupon-input {
+  flex: 1;
+  padding: 8px 12px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  background: var(--bg-muted);
+  color: var(--text-primary);
+  font-family: inherit;
+  font-size: 0.82rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+.coupon-input:focus {
+  outline: none;
+  border-color: var(--brand-primary);
+}
+.coupon-applied-pill {
+  display: none;
+  align-items: center;
+  justify-content: space-between;
+  padding: 6px 10px;
+  background: rgba(34, 197, 94, 0.12);
+  border: 1px solid rgba(34, 197, 94, 0.3);
+  border-radius: var(--radius-sm);
+  color: var(--success);
+  font-size: 0.78rem;
+  font-weight: 700;
+  margin-top: 8px;
+}
+.coupon-remove-btn {
+  background: none;
+  border: none;
+  color: var(--danger);
+  font-size: 0.75rem;
+  cursor: pointer;
+  padding: 0 4px;
+}
+
+.cart-total-row.discount-row {
+  color: var(--success);
+  font-weight: 700;
+  display: none;
+}
+.cart-total-row.discount-row span:last-child {
+  color: var(--success);
+}
+
+.promise-tracking-card {
+  margin-top: 24px;
+  padding: 20px;
+  border-radius: var(--radius-lg);
+  background: linear-gradient(135deg, rgba(232,89,12,0.08), rgba(255,138,76,0.03));
+  border: 1.5px solid rgba(232,89,12,0.25);
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  transition: all 0.3s ease;
+}
+
+.promise-tracking-card.late {
+  border-color: rgba(239, 68, 68, 0.45);
+  background: linear-gradient(135deg, rgba(239, 68, 68, 0.08), rgba(232, 89, 12, 0.06));
+  box-shadow: 0 4px 20px rgba(239, 68, 68, 0.08);
+}
+
+.promise-tracking-card.ontime {
+  border-color: rgba(34, 197, 94, 0.35);
+  background: linear-gradient(135deg, rgba(34, 197, 94, 0.08), rgba(16, 185, 129, 0.03));
+}
+
+.pulse-claim-btn {
+  animation: pulseClaim 2s infinite;
+}
+
+@keyframes pulseClaim {
+  0% { box-shadow: 0 0 0 0 rgba(232, 89, 12, 0.6); }
+  70% { box-shadow: 0 0 0 10px rgba(232, 89, 12, 0); }
+  100% { box-shadow: 0 0 0 0 rgba(232, 89, 12, 0); }
+}
+
+.coupon-status-hint {
+  font-size: 0.76rem;
+  margin-top: 6px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.coupon-status-hint.unlocked {
+  color: var(--success);
+  font-weight: 600;
+}
+.coupon-status-hint.locked {
+  color: var(--text-muted);
+}
+
+.sim-controls-bar {
+  margin-top: 14px;
+  padding: 10px 14px;
+  background: var(--bg-muted);
+  border: 1px dashed var(--border);
+  border-radius: var(--radius-md);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
 .empty-cart { text-align: center; padding: 40px 20px; color: var(--text-muted); }
 .empty-cart-icon { font-size: 3rem; margin-bottom: 12px; }
 
