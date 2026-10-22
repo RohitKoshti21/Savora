@@ -25,6 +25,7 @@
   <ul class="nav-links">
     <li><a href="#" onclick="navigateTo('home')" id="nav-home" class="active">Home</a></li>
     <li><a href="#" onclick="navigateTo('restaurants')" id="nav-restaurants">Restaurants</a></li>
+    <li><a href="#" onclick="navigateTo('smartfinder')" id="nav-smartfinder">✨ Smart Finder</a></li>
     <li><a href="#" onclick="navigateTo('orders')" id="nav-orders">My Orders</a></li>
     <li><a href="bpm.html" id="nav-bpm">BPM &amp; ERD</a></li>
   </ul>
@@ -186,6 +187,237 @@
     </div>
   </footer>
 
+</div>
+
+<!-- SMART FINDER PAGE -->
+<div class="page" id="page-smartfinder">
+  <div class="smartfinder-page">
+
+    <!-- Hero -->
+    <div class="sf-hero">
+      <div class="sf-hero-glow"></div>
+      <div class="sf-hero-content">
+        <div class="sf-hero-badge">✨ AI-Powered</div>
+        <h1 class="sf-hero-title">Smart <span class="hero-title-gradient">Meal Finder</span></h1>
+        <p class="sf-hero-sub">Tell us what you need. We'll find the perfect meal — without the endless scrolling.</p>
+      </div>
+    </div>
+
+    <!-- Wizard -->
+    <div class="sf-wizard-wrap" id="sf-wizard-wrap">
+
+      <!-- Step Indicators -->
+      <div class="sf-steps-indicator" id="sf-steps-indicator">
+        <div class="sf-step-dot active" data-step="1">1</div>
+        <div class="sf-step-line"></div>
+        <div class="sf-step-dot" data-step="2">2</div>
+        <div class="sf-step-line"></div>
+        <div class="sf-step-dot" data-step="3">3</div>
+        <div class="sf-step-line"></div>
+        <div class="sf-step-dot" data-step="4">4</div>
+        <div class="sf-step-line"></div>
+        <div class="sf-step-dot" data-step="5">5</div>
+      </div>
+
+      <!-- STEP 1: Budget -->
+      <div class="sf-step active" id="sf-step-1">
+        <div class="sf-step-header">
+          <div class="sf-step-emoji">💰</div>
+          <h2 class="sf-step-title">What's your budget?</h2>
+          <p class="sf-step-desc">We'll find the best meal within your price range</p>
+        </div>
+        <div class="sf-options-grid sf-options-grid-3" id="sf-budget-options">
+          <div class="sf-option" data-group="budget" data-value="100" onclick="sfSelect(this)">
+            <div class="sf-option-emoji">🪙</div>
+            <div class="sf-option-label">₹100</div>
+            <div class="sf-option-desc">Budget-friendly</div>
+          </div>
+          <div class="sf-option" data-group="budget" data-value="200" onclick="sfSelect(this)">
+            <div class="sf-option-emoji">💵</div>
+            <div class="sf-option-label">₹200</div>
+            <div class="sf-option-desc">Everyday meal</div>
+          </div>
+          <div class="sf-option" data-group="budget" data-value="300" onclick="sfSelect(this)">
+            <div class="sf-option-emoji">💎</div>
+            <div class="sf-option-label">₹300</div>
+            <div class="sf-option-desc">Go a bit fancy</div>
+          </div>
+          <div class="sf-option" data-group="budget" data-value="500" onclick="sfSelect(this)">
+            <div class="sf-option-emoji">🤑</div>
+            <div class="sf-option-label">₹500+</div>
+            <div class="sf-option-desc">Treat yourself</div>
+          </div>
+        </div>
+        <div class="sf-nav">
+          <span></span>
+          <button class="btn btn-primary" onclick="sfNext(2)" id="sf-btn-1-next" disabled>Next →</button>
+        </div>
+      </div>
+
+      <!-- STEP 2: Mood -->
+      <div class="sf-step" id="sf-step-2">
+        <div class="sf-step-header">
+          <div class="sf-step-emoji">🎭</div>
+          <h2 class="sf-step-title">What's your mood?</h2>
+          <p class="sf-step-desc">Help us match the vibe of your meal</p>
+        </div>
+        <div class="sf-options-grid sf-options-grid-2" id="sf-mood-options">
+          <div class="sf-option" data-group="mood" data-value="comfort" onclick="sfSelect(this)">
+            <div class="sf-option-emoji">🤗</div>
+            <div class="sf-option-label">Comfort Food</div>
+            <div class="sf-option-desc">Warm, hearty &amp; satisfying</div>
+          </div>
+          <div class="sf-option" data-group="mood" data-value="spicy" onclick="sfSelect(this)">
+            <div class="sf-option-emoji">🌶️</div>
+            <div class="sf-option-label">Spicy &amp; Bold</div>
+            <div class="sf-option-desc">Fiery flavors, maximum kick</div>
+          </div>
+          <div class="sf-option" data-group="mood" data-value="light" onclick="sfSelect(this)">
+            <div class="sf-option-emoji">🥗</div>
+            <div class="sf-option-label">Light &amp; Fresh</div>
+            <div class="sf-option-desc">Clean, healthy &amp; refreshing</div>
+          </div>
+          <div class="sf-option" data-group="mood" data-value="treat" onclick="sfSelect(this)">
+            <div class="sf-option-emoji">🎂</div>
+            <div class="sf-option-label">Treat Yourself</div>
+            <div class="sf-option-desc">Something special &amp; indulgent</div>
+          </div>
+        </div>
+        <div class="sf-nav">
+          <button class="btn btn-secondary" onclick="sfPrev(1)">← Back</button>
+          <button class="btn btn-primary" onclick="sfNext(3)" id="sf-btn-2-next" disabled>Next →</button>
+        </div>
+      </div>
+
+      <!-- STEP 3: Hunger Level -->
+      <div class="sf-step" id="sf-step-3">
+        <div class="sf-step-header">
+          <div class="sf-step-emoji">😋</div>
+          <h2 class="sf-step-title">How hungry are you?</h2>
+          <p class="sf-step-desc">We'll size your meal recommendation accordingly</p>
+        </div>
+        <div class="sf-options-grid sf-options-grid-3" id="sf-hunger-options">
+          <div class="sf-option" data-group="hunger" data-value="snack" onclick="sfSelect(this)">
+            <div class="sf-option-emoji">🥨</div>
+            <div class="sf-option-label">Just a Snack</div>
+            <div class="sf-option-desc">Light bite to hold me over</div>
+          </div>
+          <div class="sf-option" data-group="hunger" data-value="regular" onclick="sfSelect(this)">
+            <div class="sf-option-emoji">🍽️</div>
+            <div class="sf-option-label">Regular Meal</div>
+            <div class="sf-option-desc">Normal hunger, full meal</div>
+          </div>
+          <div class="sf-option" data-group="hunger" data-value="extra" onclick="sfSelect(this)">
+            <div class="sf-option-emoji">🦁</div>
+            <div class="sf-option-label">Extra Hungry</div>
+            <div class="sf-option-desc">I could eat a whole feast</div>
+          </div>
+        </div>
+        <div class="sf-nav">
+          <button class="btn btn-secondary" onclick="sfPrev(2)">← Back</button>
+          <button class="btn btn-primary" onclick="sfNext(4)" id="sf-btn-3-next" disabled>Next →</button>
+        </div>
+      </div>
+
+      <!-- STEP 4: Dietary Preference -->
+      <div class="sf-step" id="sf-step-4">
+        <div class="sf-step-header">
+          <div class="sf-step-emoji">🌿</div>
+          <h2 class="sf-step-title">Any dietary preferences?</h2>
+          <p class="sf-step-desc">We'll filter out what doesn't work for you</p>
+        </div>
+        <div class="sf-options-grid sf-options-grid-2" id="sf-diet-options">
+          <div class="sf-option" data-group="diet" data-value="any" onclick="sfSelect(this)">
+            <div class="sf-option-emoji">🍴</div>
+            <div class="sf-option-label">No Preference</div>
+            <div class="sf-option-desc">Veg, non-veg — all good</div>
+          </div>
+          <div class="sf-option" data-group="diet" data-value="veg" onclick="sfSelect(this)">
+            <div class="sf-option-emoji">🥦</div>
+            <div class="sf-option-label">Vegetarian</div>
+            <div class="sf-option-desc">Plant-based only please</div>
+          </div>
+          <div class="sf-option" data-group="diet" data-value="nonveg" onclick="sfSelect(this)">
+            <div class="sf-option-emoji">🍗</div>
+            <div class="sf-option-label">Non-Vegetarian</div>
+            <div class="sf-option-desc">Meat &amp; seafood welcome</div>
+          </div>
+          <div class="sf-option" data-group="diet" data-value="healthy" onclick="sfSelect(this)">
+            <div class="sf-option-emoji">💪</div>
+            <div class="sf-option-label">Healthy &amp; Clean</div>
+            <div class="sf-option-desc">Low-cal, nutritious meals</div>
+          </div>
+        </div>
+        <div class="sf-nav">
+          <button class="btn btn-secondary" onclick="sfPrev(3)">← Back</button>
+          <button class="btn btn-primary" onclick="sfNext(5)" id="sf-btn-4-next" disabled>Next →</button>
+        </div>
+      </div>
+
+      <!-- STEP 5: Time Available -->
+      <div class="sf-step" id="sf-step-5">
+        <div class="sf-step-header">
+          <div class="sf-step-emoji">⏰</div>
+          <h2 class="sf-step-title">How much time do you have?</h2>
+          <p class="sf-step-desc">We'll only show restaurants that can deliver in time</p>
+        </div>
+        <div class="sf-options-grid sf-options-grid-3" id="sf-time-options">
+          <div class="sf-option" data-group="time" data-value="15" onclick="sfSelect(this)">
+            <div class="sf-option-emoji">⚡</div>
+            <div class="sf-option-label">Under 15 min</div>
+            <div class="sf-option-desc">I need it now!</div>
+          </div>
+          <div class="sf-option" data-group="time" data-value="25" onclick="sfSelect(this)">
+            <div class="sf-option-emoji">🕐</div>
+            <div class="sf-option-label">Under 25 min</div>
+            <div class="sf-option-desc">Reasonably quick</div>
+          </div>
+          <div class="sf-option" data-group="time" data-value="60" onclick="sfSelect(this)">
+            <div class="sf-option-emoji">😌</div>
+            <div class="sf-option-label">No Rush</div>
+            <div class="sf-option-desc">Take your time, quality matters</div>
+          </div>
+        </div>
+        <div class="sf-nav">
+          <button class="btn btn-secondary" onclick="sfPrev(4)">← Back</button>
+          <button class="btn btn-primary sf-find-btn" onclick="sfFindMeals()" id="sf-btn-5-next" disabled>✨ Find My Meals</button>
+        </div>
+      </div>
+
+    </div><!-- end sf-wizard-wrap -->
+
+    <!-- Results Section -->
+    <div class="sf-results-section" id="sf-results-section" style="display:none;">
+      <div class="sf-results-header">
+        <div>
+          <h2 id="sf-results-title">🎯 Your Perfect Meals</h2>
+          <p id="sf-results-subtitle" style="color:var(--text-muted); margin-top:4px;"></p>
+        </div>
+        <button class="btn btn-secondary" onclick="sfReset()" id="sf-restart-btn">🔄 Start Over</button>
+      </div>
+
+      <!-- Summary pill -->
+      <div class="sf-summary-pill" id="sf-summary-pill"></div>
+
+      <!-- Sort bar -->
+      <div class="sf-sort-bar">
+        <span style="font-size:0.85rem; color:var(--text-muted); font-weight:600;">Sort by:</span>
+        <button class="sf-sort-btn active" id="sf-sort-score" onclick="sfSort('score')">⭐ Best Match</button>
+        <button class="sf-sort-btn" id="sf-sort-price" onclick="sfSort('price')">💰 Lowest Price</button>
+        <button class="sf-sort-btn" id="sf-sort-time" onclick="sfSort('time')">⏱ Fastest</button>
+        <button class="sf-sort-btn" id="sf-sort-rating" onclick="sfSort('rating')">🌟 Top Rated</button>
+      </div>
+
+      <div id="sf-results-grid" class="sf-results-grid">
+        <!-- Populated by JS -->
+      </div>
+
+      <div style="text-align:center; margin-top:40px;">
+        <button class="btn btn-secondary" onclick="sfReset()">🔄 Refine Search</button>
+      </div>
+    </div>
+
+  </div>
 </div>
 
 <!-- RESTAURANTS PAGE -->

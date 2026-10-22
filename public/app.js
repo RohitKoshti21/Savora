@@ -30,6 +30,7 @@ function navigateTo(page, params = {}) {
   if (page === 'menu' && params.restaurantId) loadMenuPage(params.restaurantId);
   if (page === 'orders') loadOrdersPage();
   if (page === 'tracking' && params.orderId) loadTrackingPage(params.orderId);
+  if (page === 'smartfinder') sfResetWizard();
 }
 
 function doHeroSearch() {
@@ -834,3 +835,392 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   });
 });
+
+// ==================== SMART FINDER ====================
+
+// State
+const SF = {
+  budget: null,
+  mood: null,
+  hunger: null,
+  diet: null,
+  time: null,
+  results: [],
+  currentSort: 'score'
+};
+
+/** Called when user clicks an option tile */
+function sfSelect(el) {
+  const group = el.dataset.group;
+  const val = el.dataset.value;
+
+  // Deselect siblings
+  document.querySelectorAll(`.sf-option[data-group="${group}"]`).forEach(o => o.classList.remove('selected'));
+  el.classList.add('selected');
+
+  SF[group] = group === 'budget' || group === 'time' ? Number(val) : val;
+
+  // Enable next button for this step
+  const stepMap = { budget: 1, mood: 2, hunger: 3, diet: 4, time: 5 };
+  const step = stepMap[group];
+  const btn = document.getElementById(`sf-btn-${step}-next`);
+  if (btn) btn.disabled = false;
+}
+
+function sfNext(toStep) {
+  sfGoTo(toStep);
+}
+
+function sfPrev(toStep) {
+  sfGoTo(toStep);
+}
+
+function sfGoTo(step) {
+  // Update step dots & lines
+  document.querySelectorAll('.sf-step').forEach(s => s.classList.remove('active'));
+  document.querySelectorAll('.sf-step-dot').forEach(d => {
+    const ds = Number(d.dataset.step);
+    d.classList.remove('active', 'done');
+    if (ds < step) d.classList.add('done');
+    if (ds === step) d.classList.add('active');
+  });
+  document.querySelectorAll('.sf-step-line').forEach((line, i) => {
+    line.classList.toggle('done', i + 1 < step);
+  });
+
+  const target = document.getElementById(`sf-step-${step}`);
+  if (target) {
+    target.classList.add('active');
+    // Scroll wizard into view smoothly
+    target.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+  }
+}
+
+/** Main recommendation engine */
+function sfFindMeals() {
+  const btn = document.getElementById('sf-btn-5-next');
+  btn.textContent = '🔍 Searching...';
+  btn.disabled = true;
+
+  setTimeout(() => {
+    const results = sfComputeRecommendations();
+    SF.results = results;
+    SF.currentSort = 'score';
+    sfShowResults(results);
+    btn.textContent = '✨ Find My Meals';
+    btn.disabled = false;
+  }, 900);
+}
+
+/** Scoring & filtering logic */
+function sfComputeRecommendations() {
+  const { budget, mood, hunger, diet, time } = SF;
+
+  // --- Mood → cuisine / tag affinity ---
+  const moodMap = {
+    comfort: {
+      cuisines: ['Indian', 'South Indian', 'American', 'Korean', 'Middle Eastern'],
+      tags: ['Biryani', 'Curry', 'Burgers', 'Fried Chicken', 'Kebabs'],
+      keywords: ['rich', 'creamy', 'butter', 'ghee', 'double', 'slow-cooked', 'hearty', 'classic']
+    },
+    spicy: {
+      cuisines: ['Indian', 'South Indian', 'Mexican', 'Korean', 'Middle Eastern'],
+      tags: ['Biryani', 'Curry', 'Tacos', 'K-Food'],
+      keywords: ['spicy', 'chili', 'fiery', 'gochujang', 'chipotle', 'sriracha', 'podi', 'chilli', 'pepper', 'masala', 'jalap']
+    },
+    light: {
+      cuisines: ['Healthy', 'Japanese', 'French', 'Middle Eastern'],
+      tags: ['Salads', 'Bowls', 'Smoothies', 'Sushi'],
+      keywords: ['salad', 'fresh', 'light', 'bowl', 'quinoa', 'acai', 'edamame', 'steamed', 'greek', 'smoothie']
+    },
+    treat: {
+      cuisines: ['Desserts', 'Japanese', 'French', 'Italian'],
+      tags: ['Waffles', 'Gelato', 'Sushi', 'Croissants'],
+      keywords: ['waffle', 'gelato', 'chocolate', 'truffle', 'premium', 'artisan', 'brulee', 'salmon', 'nutella', 'crepe', 'caramel']
+    }
+  };
+
+  // --- Hunger → price range multiplier ---
+  const hungerPriceMultiplier = { snack: 0.65, regular: 1.0, extra: 1.4 };
+  const effectiveBudget = budget * hungerPriceMultiplier[hunger];
+
+  // Hunger → prefer items with lower/higher base price
+  const hungerPriceRange = {
+    snack: { min: 0, max: 180 },
+    regular: { min: 100, max: 350 },
+    extra: { min: 200, max: 9999 }
+  };
+
+  const affinities = moodMap[mood] || moodMap.comfort;
+  const scored = [];
+
+  // Iterate all restaurants & their items
+  for (const restaurant of RESTAURANTS) {
+    if (!restaurant.isOpen) continue;
+
+    // Time filter: parse delivery time upper bound
+    const deliveryTimeMax = parseDeliveryTimeMax(restaurant.deliveryTime);
+    if (deliveryTimeMax > time) continue;
+
+    const menuItems = MENU_ITEMS[restaurant.id] || [];
+
+    for (const item of menuItems) {
+      // Diet filter
+      if (diet === 'veg' && !item.veg) continue;
+      if (diet === 'nonveg' && item.veg) continue;
+      if (diet === 'healthy') {
+        // Allow veg items + items from Healthy/Japanese cuisine
+        if (!item.veg && !['Healthy', 'Japanese', 'French'].includes(restaurant.cuisine)) continue;
+      }
+
+      // Budget filter (item price + delivery fee must fit)
+      const totalCost = item.price + restaurant.deliveryFee;
+      if (totalCost > budget * 1.1) continue; // 10% tolerance
+
+      // Hunger range filter
+      const { min, max } = hungerPriceRange[hunger];
+      if (item.price < min * 0.7 || item.price > max * 1.3) continue;
+
+      // === Scoring ===
+      let score = 0;
+
+      // 1. Mood-cuisine match (0-25 pts)
+      if (affinities.cuisines.includes(restaurant.cuisine)) score += 25;
+
+      // 2. Mood-tag match (0-20 pts)
+      const tagMatches = restaurant.tags.filter(t => affinities.tags.includes(t)).length;
+      score += tagMatches * 8;
+
+      // 3. Keyword match in item name + description (0-20 pts)
+      const combinedText = (item.name + ' ' + item.description).toLowerCase();
+      const kwMatches = affinities.keywords.filter(k => combinedText.includes(k)).length;
+      score += Math.min(kwMatches * 7, 20);
+
+      // 4. Rating bonus (0-15 pts)
+      score += (restaurant.rating - 3.5) * 10;
+
+      // 5. Bestseller bonus (0-8 pts)
+      if (item.bestseller) score += 8;
+
+      // 6. Budget efficiency: how well item fits budget (0-12 pts)
+      const budgetUtilization = item.price / effectiveBudget;
+      const efficiency = 1 - Math.abs(budgetUtilization - 0.8); // peak at 80% utilization
+      score += Math.max(0, efficiency * 12);
+
+      // 7. Delivery speed bonus (0-10 pts, faster = more pts)
+      score += Math.max(0, (60 - deliveryTimeMax) / 5);
+
+      // 8. Veg affinity when healthy selected
+      if (diet === 'healthy' && item.veg) score += 6;
+
+      // Collect match reasons
+      const reasons = [];
+      if (affinities.cuisines.includes(restaurant.cuisine)) reasons.push(restaurant.cuisine + ' cuisine');
+      if (item.bestseller) reasons.push('Bestseller');
+      if (item.veg) reasons.push('Vegetarian');
+      if (kwMatches > 0) reasons.push(mood.charAt(0).toUpperCase() + mood.slice(1) + ' mood');
+      if (deliveryTimeMax <= 20) reasons.push('Super fast delivery');
+      if (item.rating >= 4.8) reasons.push('Highly rated');
+
+      scored.push({
+        item,
+        restaurant,
+        score: Math.round(score),
+        totalCost: item.price + restaurant.deliveryFee,
+        deliveryTimeMax,
+        reasons
+      });
+    }
+  }
+
+  // Sort by score descending, deduplicate restaurant (keep best item per restaurant)
+  scored.sort((a, b) => b.score - a.score);
+
+  // Keep top-2 items per restaurant to allow variety
+  const perRestaurant = {};
+  const filtered = [];
+  for (const entry of scored) {
+    const rid = entry.restaurant.id;
+    if (!perRestaurant[rid]) perRestaurant[rid] = 0;
+    if (perRestaurant[rid] < 2) {
+      filtered.push(entry);
+      perRestaurant[rid]++;
+    }
+    if (filtered.length >= 18) break;
+  }
+
+  return filtered.slice(0, 12);
+}
+
+function parseDeliveryTimeMax(str) {
+  // "18-24 min" → 24
+  const match = str.match(/(\d+)\s*min/g);
+  if (!match) return 30;
+  const nums = match.map(m => parseInt(m));
+  return Math.max(...nums);
+}
+
+function sfShowResults(results) {
+  // Hide wizard, show results
+  document.getElementById('sf-wizard-wrap').style.display = 'none';
+  const section = document.getElementById('sf-results-section');
+  section.style.display = 'block';
+
+  // Summary tags
+  const summaryLabels = {
+    budget: { 100: '₹100 budget', 200: '₹200 budget', 300: '₹300 budget', 500: '₹500+ budget' },
+    mood: { comfort: '🤗 Comfort food', spicy: '🌶️ Spicy & Bold', light: '🥗 Light & Fresh', treat: '🎂 Treat yourself' },
+    hunger: { snack: '🥨 Snack-sized', regular: '🍽️ Regular meal', extra: '🦁 Extra hungry' },
+    diet: { any: '🍴 No restriction', veg: '🥦 Vegetarian', nonveg: '🍗 Non-veg', healthy: '💪 Healthy & Clean' },
+    time: { 15: '⚡ Under 15 min', 25: '🕐 Under 25 min', 60: '😌 No rush' }
+  };
+
+  const pill = document.getElementById('sf-summary-pill');
+  pill.innerHTML = ['budget', 'mood', 'hunger', 'diet', 'time'].map(k => {
+    const val = SF[k];
+    const label = summaryLabels[k][val] || val;
+    return `<span class="sf-summary-tag">${label}</span>`;
+  }).join('');
+
+  document.getElementById('sf-results-title').textContent = results.length
+    ? `🎯 ${results.length} Meal${results.length > 1 ? 's' : ''} Found For You`
+    : '😕 No Meals Found';
+  document.getElementById('sf-results-subtitle').textContent = results.length
+    ? `Ranked by match score · budget ₹${SF.budget} · ${Object.values({ mood: SF.mood, hunger: SF.hunger }).join(', ')}`
+    : 'Try relaxing your filters (higher budget or more time)';
+
+  sfRenderGrid(results);
+}
+
+function sfRenderGrid(results) {
+  const grid = document.getElementById('sf-results-grid');
+
+  if (!results.length) {
+    grid.innerHTML = `
+      <div class="sf-no-results">
+        <div class="sf-no-results-icon">🔍</div>
+        <h3>No meals match your criteria</h3>
+        <p style="margin-top: 8px;">Try increasing your budget, selecting "No Rush" for time, or a different diet.</p>
+        <button class="btn btn-primary" style="margin-top: 20px;" onclick="sfReset()">🔄 Try Again</button>
+      </div>`;
+    return;
+  }
+
+  const maxScore = Math.max(...results.map(r => r.score));
+
+  grid.innerHTML = results.map((entry, idx) => {
+    const { item, restaurant, score, totalCost, deliveryTimeMax, reasons } = entry;
+    const scorePercent = Math.round((score / maxScore) * 100);
+    const isTop = idx === 0;
+    const vegIcon = item.veg
+      ? `<span class="veg-icon veg" style="flex-shrink:0;"></span>`
+      : `<span class="veg-icon non-veg" style="flex-shrink:0;"></span>`;
+
+    const reasonTags = reasons.slice(0, 3).map(r =>
+      `<span class="sf-match-tag">✓ ${r}</span>`
+    ).join('');
+
+    return `
+      <div class="sf-meal-card ${isTop ? 'rank-1' : ''}"
+           onclick="navigateTo('menu', { restaurantId: ${restaurant.id} })"
+           id="sf-card-${restaurant.id}-${item.id}">
+        <div class="sf-card-img-wrap">
+          <img class="sf-card-img" src="${item.image}" alt="${item.name}"
+            onerror="this.src='https://images.unsplash.com/photo-1504674900247-0877df9cc836?w=600&q=80'" loading="lazy">
+          <div class="sf-card-score-badge">
+            <span>⭐ ${(score / 10).toFixed(1)}</span>
+            <div class="sf-card-score-bar">
+              <div class="sf-card-score-fill" style="width:${scorePercent}%"></div>
+            </div>
+          </div>
+        </div>
+        <div class="sf-card-body">
+          <div class="sf-card-restaurant">
+            ${vegIcon}
+            <span class="sf-card-restaurant-name">${restaurant.name}</span>
+            <span class="rating-chip" style="font-size:0.72rem; padding: 2px 7px;">⭐ ${restaurant.rating}</span>
+          </div>
+          <div class="sf-card-item-name">${item.name}</div>
+          <div class="sf-card-desc">${item.description}</div>
+          <div class="sf-match-tags">${reasonTags}</div>
+          <div class="sf-card-meta">
+            <span>🕐 ${restaurant.deliveryTime}</span>
+            <span>📍 ${restaurant.distance}</span>
+            <span>🚴 +₹${restaurant.deliveryFee} delivery</span>
+          </div>
+          <div class="sf-card-footer">
+            <div>
+              <div class="sf-card-price">₹${item.price}</div>
+              <div class="sf-card-total-label">+₹${restaurant.deliveryFee} delivery · ₹${totalCost} total</div>
+            </div>
+            <button class="btn btn-primary btn-sm" onclick="event.stopPropagation(); sfQuickAdd(${restaurant.id}, ${JSON.stringify(item).replace(/"/g, '&quot;')})">
+              🛒 Add to Cart
+            </button>
+          </div>
+        </div>
+      </div>
+    `;
+  }).join('');
+}
+
+function sfSort(by) {
+  SF.currentSort = by;
+
+  // Update sort button UI
+  ['score', 'price', 'time', 'rating'].forEach(k => {
+    const btn = document.getElementById(`sf-sort-${k}`);
+    if (btn) btn.classList.toggle('active', k === by);
+  });
+
+  const sorted = [...SF.results].sort((a, b) => {
+    if (by === 'score') return b.score - a.score;
+    if (by === 'price') return a.totalCost - b.totalCost;
+    if (by === 'time') return a.deliveryTimeMax - b.deliveryTimeMax;
+    if (by === 'rating') return b.restaurant.rating - a.restaurant.rating;
+    return 0;
+  });
+
+  sfRenderGrid(sorted);
+}
+
+/** Quick add to cart from result card */
+function sfQuickAdd(restaurantId, item) {
+  const added = Cart.addItem(restaurantId, item);
+  if (added) {
+    showToast(`🛒 ${item.name} added to cart!`, 'success');
+    updateCartUI();
+  }
+}
+
+function sfReset() {
+  // Clear state
+  SF.budget = null; SF.mood = null; SF.hunger = null; SF.diet = null; SF.time = null;
+  SF.results = []; SF.currentSort = 'score';
+  sfResetWizard();
+}
+
+function sfResetWizard() {
+  // Show wizard, hide results
+  const wrap = document.getElementById('sf-wizard-wrap');
+  const results = document.getElementById('sf-results-section');
+  if (wrap) wrap.style.display = 'block';
+  if (results) results.style.display = 'none';
+
+  // Reset all option selections
+  document.querySelectorAll('.sf-option').forEach(o => o.classList.remove('selected'));
+
+  // Disable all next buttons
+  [1,2,3,4,5].forEach(i => {
+    const btn = document.getElementById(`sf-btn-${i}-next`);
+    if (btn) btn.disabled = true;
+  });
+
+  // Reset sort buttons
+  document.querySelectorAll('.sf-sort-btn').forEach(b => b.classList.remove('active'));
+  const defSort = document.getElementById('sf-sort-score');
+  if (defSort) defSort.classList.add('active');
+
+  // Go to step 1
+  sfGoTo(1);
+}
+
