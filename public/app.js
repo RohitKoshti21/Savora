@@ -92,7 +92,7 @@ function renderRestaurantGrid(container, restaurants) {
     <div class="card restaurant-card" onclick="navigateTo('menu', { restaurantId: ${r.id} })" id="rest-card-${r.id}">
       <div class="restaurant-card-image-wrap">
         <img class="restaurant-card-image" src="${r.image}" alt="${r.name}" loading="lazy"
-          onerror="this.src='https://images.unsplash.com/photo-1504674900247-0877df9cc836?w=600&q=80'">
+          onerror="this.onerror=null;this.src='/images/food-placeholder.jpg'">
         ${r.promoted ? `<span class="badge-promoted">⭐ Promoted</span>` : ''}
         ${!r.isOpen ? `<div class="badge-closed">Closed</div>` : ''}
       </div>
@@ -205,7 +205,7 @@ function renderMenuItem(item, restaurantId) {
         </div>
       </div>
       <img class="menu-item-img" src="${item.image}" alt="${item.name}"
-        onerror="this.src='https://images.unsplash.com/photo-1504674900247-0877df9cc836?w=400&q=80'" loading="lazy">
+        onerror="this.onerror=null;this.src='/images/food-placeholder.jpg'" loading="lazy">
     </div>
   `;
 }
@@ -1126,7 +1126,7 @@ function sfRenderGrid(results) {
            id="sf-card-${restaurant.id}-${item.id}">
         <div class="sf-card-img-wrap">
           <img class="sf-card-img" src="${item.image}" alt="${item.name}"
-            onerror="this.src='https://images.unsplash.com/photo-1504674900247-0877df9cc836?w=600&q=80'" loading="lazy">
+            onerror="this.onerror=null;this.src='/images/food-placeholder.jpg'" loading="lazy">
           <div class="sf-card-score-badge">
             <span>⭐ ${(score / 10).toFixed(1)}</span>
             <div class="sf-card-score-bar">

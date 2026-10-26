@@ -11,6 +11,7 @@ header{padding:12px 18px;border-bottom:1px solid var(--ln);display:flex;justify-
 h1{font-size:19px;margin:0}h1 span{color:var(--ac)}small,.mu{color:var(--mu)}
 nav{display:flex;gap:6px;padding:8px 14px;border-bottom:1px solid var(--ln)}
 main{padding:14px;max-width:1500px;margin:auto}
+@media(min-width:2400px){body{font-size:24px}main{max-width:3700px;padding:30px}header,nav{padding:20px 40px}h1{font-size:34px}button,select,.btn-link{font-size:22px;padding:12px 20px;border-radius:12px}.c{padding:28px;border-radius:16px}.pill{font-size:20px;padding:4px 14px}small,.mu{font-size:20px}#tip{font-size:20px;max-width:480px}svg{min-width:0}}
 button,.btn-link{font:inherit;padding:7px 12px;border-radius:7px;border:1px solid var(--ln);background:var(--card);color:var(--tx);cursor:pointer;text-decoration:none;display:inline-flex;align-items:center;gap:4px}
 button:hover,.btn-link:hover{border-color:var(--ac)}
 button.on,button.p{background:var(--ac);color:#fff;border-color:var(--ac)}
@@ -18,6 +19,10 @@ button.on,button.p{background:var(--ac);color:#fff;border-color:var(--ac)}
 .f{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-bottom:10px}.w{overflow-x:auto}
 .pill{display:inline-block;padding:2px 9px;border-radius:9px;font-size:12px;background:var(--ln);margin:2px 4px 2px 0}
 svg{display:block;min-width:900px;width:100%;height:auto}
+svg text.h{paint-order:stroke;stroke:var(--card);stroke-width:4px;stroke-linejoin:round}
+svg .l.hv{stroke:var(--ac);stroke-width:3}svg .cur .b{animation:pu 1.4s ease-in-out infinite}@keyframes pu{50%{stroke-width:5}}
+#tip{position:fixed;z-index:9;max-width:260px;padding:8px 10px;border-radius:8px;background:var(--tx);color:var(--bg);font-size:12px;pointer-events:none;display:none}
+g[data-k]:hover .b{fill:var(--ac);fill-opacity:.35}#es g[data-n]:hover .en,#es g[data-n]:hover .di{stroke:var(--ac)}
 svg text{fill:var(--tx);font:11px system-ui;pointer-events:none}
 svg .l{stroke:var(--mu);fill:none;stroke-width:1.5;transition:.25s}
 svg .b{fill:var(--card);stroke:var(--ac);stroke-width:1.5;transition:.25s}
@@ -30,129 +35,141 @@ svg .dim{opacity:.22}svg .l.hl{stroke:var(--ac);stroke-width:2.5}
 #es .di{fill:var(--card);stroke:var(--tx);stroke-width:1.5}#es .at{fill:var(--card);stroke:var(--mu);stroke-width:1.2}
 #es g[data-n]{cursor:grab}#es .sel .en,#es .sel .di{stroke:var(--ac);stroke-width:3}svg{touch-action:none}
 </style></head><body>
-<header>
-  <h1><span>Savora</span> <small>— Food Delivery Platform · BPMN & ERD</small></h1>
-  <div class="f" style="margin:0">
-    <a href="bpm.html" class="btn-link">← Back to BPM Page</a>
-    <a href="index.html" class="btn-link">🏠 Main App</a>
-    <button onclick="fs()">⛶ Present full-screen</button>
-    <button onclick="th()">🌙 Theme</button>
-  </div>
-</header>
-<nav id="nav"></nav><main id="m"></main>
+<header><h1><span>Savora</span> <small>— Food Delivery Platform · BPMN & ERD</small></h1>
+<div class="f" style="margin:0"><a href="bpm.html" class="btn-link" target="_top">← Back to BPM Page</a><a href="index.html" class="btn-link" target="_top">🏠 Main App</a><button onclick="fs()">⛶ Present full-screen</button><button onclick="th()">🌙 Theme</button></div></header>
+<nav id="nav"></nav><div id="tip"></div><main id="m"></main>
 <script>
 const $=id=>document.getElementById(id);
-let cur='bpmn',step=-1,sel=null,timer=null,esel=null;
+let NC={},EP={},Z=0,cur='bpmn',step=-1,sel=null,timer=null,esel=null;
 const TABS=[['bpmn','BPMN – Order-to-Delivery'],['er','ER Diagram']];
 function nav(){$('nav').innerHTML=TABS.map(t=>`<button class="${t[0]==cur?'on':''}" onclick="go('${t[0]}')">${t[1]}</button>`).join('')}
-function go(t){stop();cur=t;nav();$('m').innerHTML=t=='bpmn'?bpmnHTML():erHTML();t=='bpmn'?drawB():(bindE(),drawE())}
+function go(t){stop();cur=t;Z=0;nav();$('m').innerHTML=t=='bpmn'?bpmnHTML():erHTML();t=='bpmn'?drawB():(bindE(),drawE())}
 function fs(){try{document.fullscreenElement?document.exitFullscreen():document.documentElement.requestFullscreen()}catch(e){}}
 function th(){const r=document.documentElement,d=getComputedStyle(r).getPropertyValue('--bg').trim()=='#16110e';r.dataset.theme=d?'light':'dark'}
 
+/* ---------- shared: zoom + tooltip ---------- */
+function zm(d){const sv=$(cur=='bpmn'?'bs':'es'),base=cur=='bpmn'?1840:1300;if(d==0)Z=0;else{Z=Math.max(.4,Math.min(2,(Z||sv.getBoundingClientRect().width/base)+d))}sv.style.width=Z?base*Z+'px':'100%';sv.style.minWidth=Z?'0':'900px'}
+const ZB='<button onclick="zm(-.15)" title="Zoom out">−</button><button onclick="zm(.15)" title="Zoom in">+</button><button onclick="zm(0)">Fit</button>';
+const tip=$('tip');
+document.addEventListener('mousemove',e=>{const g=e.target.closest&&e.target.closest('[data-k],[data-n]');if(!g||e.target.closest('#tip')){tip.style.display='none';return}
+const k=g.dataset.k||g.dataset.n,o=g.dataset.k?N[k]:ND[k];tip.innerHTML='<b>'+(g.dataset.k?o[3]:lab(k))+'</b><br>'+(g.dataset.k?o[4]:o.d);tip.style.display='block';
+tip.style.left=Math.min(innerWidth-270,e.clientX+14)+'px';tip.style.top=(e.clientY+16)+'px'});
+document.addEventListener('mouseover',e=>{const g=e.target.closest&&e.target.closest('[data-k]');document.querySelectorAll('[data-e]').forEach(p=>{const[a,b]=p.dataset.e.split('>');p.classList.toggle('hv',!!g&&(a==g.dataset.k||b==g.dataset.k))})});
+
 /* ---------- BPMN ---------- */
 const LANES=['Customer','Savora Platform','Restaurant','Payment Gateway','Delivery Partner'];
-// type, x, lane, label, description
+const LH=130,CW=140,X0=90;
+// type, column, lane, label, description
 const N={
-s:['e',50,0,'Open app','Customer opens Savora and sets a delivery location.'],
-t1:['t',160,0,'Browse & add to cart','Searches restaurants / cuisines, adds menu items to the cart.'],
-t2:['t',280,0,'Place order','Reviews subtotal + ₹30 delivery fee + 5% tax and taps Place Order.'],
-t3:['t',400,1,'Validate cart & restaurant','System checks min. order value, item availability and whether the restaurant is open.'],
-g1:['g',520,1,'Restaurant open?','GATEWAY – Restaurant availability. Yes → payment. No → order is rejected and alternatives are suggested.'],
-e1:['e',520,0,'Rejected / suggest other','END – Customer is shown alternative restaurants.'],
-t4:['t',640,3,'Process payment','Gateway (Razorpay / Stripe / PhonePe) handles UPI, card, wallet or COD; webhook confirms status.'],
-g2:['g',760,3,'Payment success?','GATEWAY – Payment validation. Success → confirm order. Failed → retry / cancel.'],
-e2:['e',760,1,'Notify failure & refund','END – Order cancelled, customer notified, auto-refund in 5–7 days if charged.'],
-t6:['t',880,2,'Accept & prepare food','Order appears on the restaurant display (KDS); kitchen accepts and prepares it.'],
-t7:['t',1000,1,'Assign nearest partner','Algorithm picks the nearest available delivery partner and sends a push notification.'],
-g3:['g',1120,1,'Partner found?','GATEWAY – Partner assignment. Found → dispatch. None within radius → queue and retry.'],
-eq:['e',1120,2,'Queue & retry','LOOP – Request is queued and re-run until a partner accepts.'],
-t8:['t',1240,4,'Pick up & deliver','Partner collects food, GPS tracking is shared live with the customer.'],
-t9:['t',1360,1,'Verify OTP & Promise SLA','GATEWAY logic – Delivery confirmation by OTP/GPS. Evaluates 30-min Delivery Promise: if late, auto-issues 50% OFF voucher for next order. Escrow released & FoodCoins credited.'],
-e3:['e',1450,1,'Delivered','END – Order status = delivered; delivered_at stored.']};
+s:['e',0,0,'Open app','Customer opens Savora and sets a delivery location.'],
+t1:['t',1,0,'Browse & add to cart','Searches restaurants / cuisines, adds menu items to the cart.'],
+t2:['t',2,0,'Place order','Reviews subtotal + ₹30 delivery fee + 5% tax and taps Place Order.'],
+t3:['t',3,1,'Validate cart & restaurant','System checks min. order value, item availability and whether the restaurant is open.'],
+g1:['g',4,1,'Restaurant open?','GATEWAY – Restaurant availability. Yes → payment. No → order is rejected and alternatives are suggested.'],
+e1:['e',4,0,'Rejected / suggest other','END – Customer is shown alternative restaurants.'],
+t4:['t',5,3,'Process payment','Gateway (Razorpay / Stripe / PhonePe) handles UPI, card, wallet or COD; webhook confirms status.'],
+g2:['g',6,3,'Payment success?','GATEWAY – Payment validation. Success → confirm order. Failed → retry / cancel.'],
+e2:['e',6,1,'Notify failure & refund','END – Order cancelled, customer notified, auto-refund in 5–7 days if charged.'],
+t6:['t',7,2,'Accept & prepare food','Order appears on the restaurant display (KDS); kitchen accepts and prepares it.'],
+t7:['t',8,1,'Assign nearest partner','Algorithm picks the nearest available delivery partner and sends a push notification.'],
+g3:['g',9,1,'Partner found?','GATEWAY – Partner assignment. Found → dispatch. None within radius → queue and retry.'],
+eq:['e',9,2,'Queue & retry','LOOP – Request is queued and re-run until a partner accepts.'],
+t8:['t',10,4,'Pick up & deliver','Partner collects food, GPS tracking is shared live with the customer.'],
+t9:['t',11,1,'Verify OTP & award FoodCoins','Delivery confirmation by OTP/GPS. Escrow released, FoodCoins credited, rating flow starts.'],
+e3:['e',12,1,'Delivered','END – Order status = delivered; delivered_at stored.']};
 const E=[['s','t1'],['t1','t2'],['t2','t3'],['t3','g1'],['g1','e1','No'],['g1','t4','Yes'],['t4','g2'],['g2','e2','No'],['g2','t6','Yes'],['t6','t7'],['t7','g3'],['g3','eq','No'],['g3','t8','Yes'],['t8','t9'],['t9','e3']];
 const P=['s','t1','t2','t3','g1','t4','g2','t6','t7','g3','t8','t9','e3'];
-const wrap=(t,m=14)=>{const L=[''];t.split(' ').forEach(x=>{const c=L[L.length-1];if(c&&(c+' '+x).length>m)L.push(x);else L[L.length-1]=(c+' '+x).trim()});return L};
-function bpmnHTML(){return `<div class="c"><div class="f"><b>BPMN — Order-to-Delivery</b><span class="mu">Step through the happy path, or click any shape (including the alternate branches).</span></div>
-<div class="f"><button onclick="mv(-1)">◀ Prev</button><button class="p" onclick="mv(1)">Next ▶</button><button onclick="auto()" id="ap">⏵ Auto-play</button><button onclick="rst()">↺ Reset</button><small>Tip: use ← → keys while presenting</small></div>
-<div class="w"><svg id="bs" viewBox="0 0 1500 500"></svg></div></div><div class="c" id="info"></div>`}
-function drawB(){const n={};for(const k in N){const [ty,x,l,tx]=N[k];n[k]={ty,x,y:50+100*l,tx,hw:ty=='t'?50:ty=='g'?30:14,hh:ty=='t'?25:ty=='g'?30:14}}
+const wrap=(t,m=16)=>{const L=[''];t.split(' ').forEach(x=>{const c=L[L.length-1];if(c&&(c+' '+x).length>m)L.push(x);else L[L.length-1]=(c+' '+x).trim()});return L};
+const txt=(x,y,L,cls='')=>L.map((t,i)=>`<text class="${cls}" x="${x}" y="${y+13*i}" text-anchor="middle" style="font-size:11px">${t}</text>`).join('');
+function bpmnHTML(){return `<div class="c"><div class="f"><b>BPMN — Order-to-Delivery</b><span class="mu">Step through the happy path, or click / hover any shape (including alternate branches).</span></div>
+<div class="f"><button onclick="mv(-1)">◀ Prev</button><button class="p" onclick="mv(1)">Next ▶</button><button onclick="auto()" id="ap">⏵ Auto-play</button><select id="sp" title="Auto-play speed"><option value="2400">Slow</option><option value="1600" selected>Normal</option><option value="900">Fast</option></select><button onclick="rst()">↺ Reset</button>${ZB}<small>Tip: ← → keys</small></div>
+<div class="w"><svg id="bs" viewBox="0 0 1840 650"></svg></div></div><div class="c" id="info"></div>`}
+function drawB(){const n={};for(const k in N){const [ty,c,l,tx]=N[k];n[k]={ty,x:X0+c*CW,y:LH/2+LH*l,tx,hw:ty=='t'?56:ty=='g'?32:14,hh:ty=='t'?30:ty=='g'?32:14}}
 let h='<defs><marker id="a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0L10 5L0 10z" fill="var(--mu)"/></marker></defs>';
-LANES.forEach((l,i)=>h+=`<rect x="0" y="${i*100}" width="1500" height="100" fill="none" stroke="var(--ln)"/><rect x="0" y="${i*100}" width="28" height="100" fill="var(--ln)"/><text transform="translate(18 ${i*100+50}) rotate(-90)" text-anchor="middle" style="font-weight:600">${l}</text>`);
-E.forEach(([A,B,lb])=>{const a=n[A],b=n[B],d=b.y>a.y?1:-1;let p,lx,ly;
-if(a.y==b.y){p=`M${a.x+a.hw} ${a.y}H${b.x-b.hw}`;lx=a.x+a.hw+6;ly=a.y-5}
-else if(a.x==b.x){p=`M${a.x} ${a.y+d*a.hh}V${b.y-d*b.hh}`;lx=a.x+6;ly=a.y+d*(a.hh+(d>0?30:14))}
-else{p=`M${a.x+a.hw} ${a.y}H${b.x}V${b.y-d*b.hh}`;lx=a.x+a.hw+6;ly=a.y-5}
-h+=`<path class="l" data-e="${A}>${B}" d="${p}" marker-end="url(#a)"/>`+(lb?`<text x="${lx}" y="${ly}" style="font-weight:700">${lb}</text>`:'')});
+LANES.forEach((l,i)=>h+=`<rect x="0" y="${i*LH}" width="1840" height="${LH}" fill="none" stroke="var(--ln)"/><rect x="0" y="${i*LH}" width="28" height="${LH}" fill="var(--ln)"/><text transform="translate(18 ${i*LH+LH/2}) rotate(-90)" text-anchor="middle" style="font-weight:600">${l}</text>`);
+let lbl='';NC={};for(const k in n)NC[k]=[n[k].x,n[k].y];EP={};E.forEach(([A,B])=>{const a=n[A],b=n[B];EP[A+'>'+B]=(a.y==b.y||a.x==b.x)?[[a.x,a.y],[b.x,b.y]]:[[a.x,a.y],[b.x,a.y],[b.x,b.y]]});
+E.forEach(([A,B,lb])=>{const a=n[A],b=n[B],d=b.y>a.y?1:-1;let p;
+if(a.y==b.y)p=`M${a.x+a.hw} ${a.y}H${b.x-b.hw}`;
+else if(a.x==b.x){p=`M${a.x} ${a.y+d*a.hh}V${b.y-d*b.hh}`;if(lb)lbl+=`<text class="h" x="${a.x+8}" y="${a.y+d*(a.hh+20)}" style="font-weight:700;fill:var(--ac)">${lb}</text>`}
+else{p=`M${a.x+a.hw} ${a.y}H${b.x}V${b.y-d*b.hh}`;if(lb)lbl+=`<text class="h" x="${a.x+a.hw+6}" y="${a.y-7}" style="font-weight:700;fill:var(--ac)">${lb}</text>`}
+h+=`<path class="l" data-e="${A}>${B}" d="${p}" marker-end="url(#a)"/>`});
+h+=lbl;
 for(const k in n){const o=n[k];let s='';
-if(o.ty=='t'){const L=wrap(o.tx),y0=o.y+4-(L.length-1)*6.5;s=`<rect class="b" x="${o.x-50}" y="${o.y-25}" width="100" height="50" rx="8"/>`+L.map((t,i)=>`<text x="${o.x}" y="${y0+13*i}" text-anchor="middle" style="font-size:10.5px">${t}</text>`).join('')}
-else if(o.ty=='g')s=`<path class="b" d="M${o.x} ${o.y-30}L${o.x+30} ${o.y}L${o.x} ${o.y+30}L${o.x-30} ${o.y}z"/><text x="${o.x}" y="${o.y+4}" text-anchor="middle">✕</text><text x="${o.x}" y="${o.y+46}" text-anchor="middle" style="font-size:10.5px">${o.tx}</text>`;
-else s=`<circle class="b" cx="${o.x}" cy="${o.y}" r="14" style="stroke-width:${k=='s'?1.5:3.5}"/><text x="${o.x}" y="${o.y+(k=='s'?-20:28)}" text-anchor="middle" style="font-size:10.5px">${k=='s'?o.tx:o.tx}</text>`;
+if(o.ty=='t'){const L=wrap(o.tx);s=`<rect class="b" x="${o.x-56}" y="${o.y-30}" width="112" height="60" rx="8"/>`+txt(o.x,o.y+4-(L.length-1)*6.5,L)}
+else if(o.ty=='g'){const up=k=='g3';s=`<path class="b" d="M${o.x} ${o.y-32}L${o.x+32} ${o.y}L${o.x} ${o.y+32}L${o.x-32} ${o.y}z"/><text x="${o.x}" y="${o.y+4}" text-anchor="middle">✕</text>`+txt(o.x,up?o.y-44:o.y+50,[o.tx],'h')}
+else{const L=wrap(o.tx),above=k=='s'||k=='e1'||k=='e2';s=`<circle class="b" cx="${o.x}" cy="${o.y}" r="14" style="stroke-width:${k=='s'?1.5:3.5}"/>`+txt(o.x,above?o.y-24-(L.length-1)*13:o.y+32,L,'h')}
 h+=`<g data-k="${k}" onclick="pick('${k}')">${s}</g>`}
+h+='<circle id="tok" r="8" fill="var(--ac)" stroke="#fff" stroke-width="2" style="display:none;pointer-events:none"/>';
 $('bs').innerHTML=h;paint()}
-function pick(k){const i=P.indexOf(k);sel=k;if(i>=0)step=i;paint()}
-function mv(d){step=Math.max(0,Math.min(P.length-1,step+d));sel=P[step];paint()}
-function rst(){stop();step=-1;sel=null;paint()}
+function moveTok(a,b){const pts=EP[a+'>'+b],t=$('tok');if(!pts||!t)return;const sg=[];let L=0;for(let i=1;i<pts.length;i++){const d=Math.hypot(pts[i][0]-pts[i-1][0],pts[i][1]-pts[i-1][1]);sg.push(d);L+=d}const t0=performance.now();t.style.display='';
+(function f(now){const u=Math.min(1,(now-t0)/700);let r=L*u,i=0;while(i<sg.length-1&&r>sg[i]){r-=sg[i];i++}const f2=sg[i]?Math.min(1,r/sg[i]):1,q={x:pts[i][0]+(pts[i+1][0]-pts[i][0])*f2,y:pts[i][1]+(pts[i+1][1]-pts[i][1])*f2};t.setAttribute('cx',q.x);t.setAttribute('cy',q.y);if(u<1)requestAnimationFrame(f)})(t0)}
+function pick(k){const i=P.indexOf(k);sel=k;if(i>=0){if(i==step+1)moveTok(P[step],k);else if(i>0)tokTo(k);step=i}paint()}
+function tokTo(k){const c=NC[k],t=$('tok');if(!c||!t)return;t.style.display='';t.setAttribute('cx',c[0]);t.setAttribute('cy',c[1])}
+function mv(d){const o=step;step=Math.max(0,Math.min(P.length-1,step+d));if(step==o)return;sel=P[step];if(d>0&&o>=0)moveTok(P[o],P[step]);else tokTo(P[step]);paint()}
+function rst(){stop();step=-1;sel=null;const t=$('tok');if(t)t.style.display='none';paint()}
 function stop(){if(timer){clearInterval(timer);timer=null;const b=$('ap');if(b)b.textContent='⏵ Auto-play'}}
-function auto(){if(timer)return stop();if(step>=P.length-1)rst();$('ap').textContent='⏸ Pause';mv(1);timer=setInterval(()=>{if(step>=P.length-1)stop();else mv(1)},1600)}
+function auto(){if(timer)return stop();if(step>=P.length-1)rst();$('ap').textContent='⏸ Pause';mv(1);timer=setInterval(()=>{if(step>=P.length-1)stop();else mv(1)},+$('sp').value)}
 function paint(){document.querySelectorAll('[data-k]').forEach(g=>{const k=g.dataset.k,i=P.indexOf(k);g.classList.toggle('vis',step>=0&&i>=0&&i<=step);g.classList.toggle('cur',k==sel);g.classList.toggle('dim',step>=0&&!(i>=0&&i<=step)&&k!=sel)});
 document.querySelectorAll('[data-e]').forEach(p=>{const[a,b]=p.dataset.e.split('>'),i=P.indexOf(a);p.classList.toggle('vis',step>=0&&i>=0&&P[i+1]==b&&i<step)});
 const o=N[sel];$('info').innerHTML=o?`<b>${o[3]}</b> <span class="pill">${LANES[o[2]]}</span>${P.indexOf(sel)>=0?`<span class="pill">Step ${P.indexOf(sel)+1} of ${P.length}</span>`:'<span class="pill">Alternate branch</span>'}<p style="margin:6px 0 0">${o[4]}</p>`:'<span class="mu">Press <b>Next ▶</b> or click a shape to see what happens at each step.</span>'}
 addEventListener('keydown',e=>{if(cur!='bpmn')return;if(e.key=='ArrowRight')mv(1);if(e.key=='ArrowLeft')mv(-1)});
 
 /* ---------- ERD (Chen notation) ---------- */
+let showA=true;
 const ND={
-User:{t:'e',x:120,y:400,a:[['user_id',-45,-90,1],['name',55,-90],['phone',-45,90],['loyalty_points',55,90]],d:'Customer account. Earns FoodCoins loyalty points.'},
-Restaurant:{t:'e',x:330,y:150,a:[['restaurant_id',-60,-85,1],['name',60,-85],['cuisine',-165,0],['avg_rating',-100,85]],d:'Partner restaurant that prepares food.'},
-MenuItem:{t:'e',l:'Menu Item',x:760,y:150,a:[['item_id',-60,-85,1],['name',60,-85],['price',165,0],['is_veg',100,85]],d:'A dish sold by one restaurant.'},
-Order:{t:'e',x:545,y:400,a:[['order_id',0,-80,1],['status',-130,75],['total',130,75]],d:'Central transaction linking customer, restaurant, items, payment and rider.'},
-Payment:{t:'e',x:980,y:400,a:[['payment_id',-50,-85,1],['method',50,-85],['amount',-50,85],['status',50,85]],d:'Gateway transaction for an order (UPI / card / wallet / COD).'},
-Partner:{t:'e',l:'Delivery Partner',x:545,y:640,a:[['partner_id',-175,0,1],['name',175,0],['phone',-55,80],['vehicle_type',55,80]],d:'Rider who picks up and delivers the order.'},
-Places:{t:'d',x:320,y:400,a:[],d:'A user places many orders. Every order belongs to exactly one user.'},
-Receives:{t:'d',x:435,y:275,a:[],d:'A restaurant receives many orders. Every order goes to exactly one restaurant.'},
-Contains:{t:'d',x:655,y:275,a:[['qty',90,45]],d:'Many-to-many: an order has many menu items and an item appears in many orders (qty stored here).'},
-Offers:{t:'d',x:545,y:150,a:[],d:'A restaurant offers many menu items. Every menu item belongs to one restaurant.'},
-PaidBy:{t:'d',l:'Paid by',x:780,y:400,a:[],d:'An order may have several payment attempts. Each payment belongs to one order.'},
-Delivers:{t:'d',x:545,y:530,a:[],d:'A partner delivers many orders. An order gets a partner only after it is confirmed (partial participation).'}};
-// from, to, double line (total participation), arrow at 'to' (the "one" side)
-const LEGS=[['Order','Places',1,0],['Places','User',0,1],['Order','Receives',1,0],['Receives','Restaurant',0,1],['Order','Delivers',0,0],['Delivers','Partner',0,1],['Order','Contains',1,0],['Contains','MenuItem',0,0],['MenuItem','Offers',1,0],['Offers','Restaurant',0,1],['Payment','PaidBy',1,0],['PaidBy','Order',0,1]];
+User:{t:'e',x:190,y:430,a:[['user_id',-50,-90,1],['name',70,-90],['phone',-50,90],['loyalty_points',70,90]],d:'Customer account. Earns FoodCoins loyalty points.'},
+Restaurant:{t:'e',x:440,y:170,a:[['restaurant_id',-60,-90,1],['name',70,-90],['cuisine',-190,-10],['avg_rating',-150,80]],d:'Partner restaurant that prepares food.'},
+MenuItem:{t:'e',l:'Menu Item',x:960,y:170,a:[['item_id',-60,-90,1],['name',70,-90],['price',190,0],['is_veg',140,85]],d:'A dish sold by one restaurant.'},
+Order:{t:'e',x:700,y:430,a:[['order_id',0,-85,1],['status',-140,80],['total',140,80]],d:'Central transaction linking customer, restaurant, items, payment and rider.'},
+Payment:{t:'e',x:1130,y:430,a:[['payment_id',-50,-90,1],['method',60,-90],['amount',-50,90],['status',60,90]],d:'Gateway transaction for an order (UPI / card / wallet / COD).'},
+Partner:{t:'e',l:'Delivery Partner',x:700,y:700,a:[['partner_id',-190,0,1],['name',190,0],['phone',-60,85],['vehicle_type',60,85]],d:'Rider who picks up and delivers the order.'},
+Places:{t:'d',x:445,y:430,a:[],d:'A user places many orders. Every order belongs to exactly one user.'},
+Receives:{t:'d',x:570,y:300,a:[],d:'A restaurant receives many orders. Every order goes to exactly one restaurant.'},
+Contains:{t:'d',x:830,y:300,a:[['qty',90,45]],d:'Many-to-many: an order has many menu items and an item appears in many orders (qty stored here).'},
+Offers:{t:'d',x:700,y:170,a:[],d:'A restaurant offers many menu items. Every menu item belongs to one restaurant.'},
+PaidBy:{t:'d',l:'Paid by',x:915,y:430,a:[],d:'An order may have several payment attempts. Each payment belongs to one order.'},
+Delivers:{t:'d',x:700,y:565,a:[],d:'A partner delivers many orders. An order gets a partner only after it is confirmed (partial participation).'}};
+// from, to, double line (total participation), arrow at 'to', cardinality at the entity end
+const LEGS=[['Order','Places',1,0,'N'],['Places','User',0,1,'1'],['Order','Receives',1,0,'N'],['Receives','Restaurant',0,1,'1'],['Order','Delivers',0,0,'N'],['Delivers','Partner',0,1,'1'],['Order','Contains',1,0,'N'],['Contains','MenuItem',0,0,'M'],['MenuItem','Offers',1,0,'N'],['Offers','Restaurant',0,1,'1'],['Payment','PaidBy',1,0,'N'],['PaidBy','Order',0,1,'1']];
 const HOME={};for(const k in ND)HOME[k]=[ND[k].x,ND[k].y];
-
-const lab=k=>ND[k].l||k;
+const lab=k=>ND[k]&&ND[k].l||k;
 const hw=k=>ND[k].t=='e'?62:56,hh=k=>ND[k].t=='e'?22:30;
 function clip(a,b){const A=ND[a],B=ND[b],dx=B.x-A.x,dy=B.y-A.y;let t;
 if(A.t=='e')t=Math.min(hw(a)/Math.abs(dx||1e-9),hh(a)/Math.abs(dy||1e-9));else t=1/(Math.abs(dx)/hw(a)+Math.abs(dy)/hh(a));
 return[A.x+dx*t,A.y+dy*t]}
 function erel(){if(!esel)return null;const r=new Set([esel]);
 if(ND[esel].t=='e'){LEGS.forEach(([a,b])=>{if(a==esel&&ND[b].t=='d')r.add(b);if(b==esel&&ND[a].t=='d')r.add(a)})}
-LEGS.forEach(([a,b])=>{if(r.has(a)&&ND[b].t=='d')r.add(b);if(r.has(b)&&ND[b].t=='d')r.add(a)});return r}
-function drawE(){const R=erel(),on=k=>!R||R.has(k);let h='<defs><marker id="ar" viewBox="0 0 10 10" refX="10" refY="5" markerWidth="10" markerHeight="10" orient="auto"><path d="M0 0L10 5L0 10z" fill="var(--tx)"/></marker></defs>';
-// attribute connectors
-for(const k in ND)ND[k].a.forEach(([n,dx,dy])=>h+=`<line class="al ${on(k)?'':'dim'}" x1="${ND[k].x}" y1="${ND[k].y}" x2="${ND[k].x+dx}" y2="${ND[k].y+dy}"/>`);
-// relationship legs
-LEGS.forEach(([a,b,dbl,arr])=>{const[p,q]=[clip(a,b),clip(b,a)],cls=`l ${R&&R.has(a)&&R.has(b)?'hl':''} ${on(a)&&on(b)?'':'dim'}`;
+LEGS.forEach(([a,b])=>{if(r.has(a)&&ND[a].t=='d')r.add(b);if(r.has(b)&&ND[b].t=='d')r.add(a)});return r}
+function drawE(){const R=erel(),on=k=>!R||R.has(k);let h='<defs><marker id="ar" viewBox="0 0 10 10" refX="10" refY="5" markerWidth="10" markerHeight="10" orient="auto"><path d="M0 0L10 5L0 10z" fill="var(--tx)"/></marker></defs>',cl='';
+if(showA)for(const k in ND)ND[k].a.forEach(([n,dx,dy])=>h+=`<line class="al ${on(k)?'':'dim'}" x1="${ND[k].x}" y1="${ND[k].y}" x2="${ND[k].x+dx}" y2="${ND[k].y+dy}"/>`);
+LEGS.forEach(([a,b,dbl,arr,c])=>{const[p,q]=[clip(a,b),clip(b,a)],cls=`l ${R&&R.has(a)&&R.has(b)?'hl':''} ${on(a)&&on(b)?'':'dim'}`;
 if(dbl){const dx=q[0]-p[0],dy=q[1]-p[1],L=Math.hypot(dx,dy),ox=-dy/L*2.3,oy=dx/L*2.3;
 h+=[1,-1].map(s=>`<path class="${cls}" d="M${p[0]+ox*s} ${p[1]+oy*s}L${q[0]+ox*s} ${q[1]+oy*s}"/>`).join('')}
-else h+=`<path class="${cls}" d="M${p[0]} ${p[1]}L${q[0]} ${q[1]}" ${arr?'marker-end="url(#ar)"':''}/>`});
-// shapes
+else h+=`<path class="${cls}" d="M${p[0]} ${p[1]}L${q[0]} ${q[1]}" ${arr?'marker-end="url(#ar)"':''}/>`;
+const ent=ND[a].t=='e'?a:b,oth=ent==a?b:a,[ex,ey]=clip(ent,oth),dx=ND[oth].x-ND[ent].x,dy=ND[oth].y-ND[ent].y,L=Math.hypot(dx,dy)||1;
+cl+=`<text class="h ${on(a)&&on(b)?'':'dim'}" x="${ex+dx/L*20-dy/L*13}" y="${ey+dy/L*20+dx/L*13+4}" text-anchor="middle" style="font-weight:700;fill:var(--ac)">${c}</text>`});
+h+=cl;
 for(const k in ND){const o=ND[k];let s='';
-o.a.forEach(([n,dx,dy,pk])=>{const rx=Math.max(34,n.length*3.5+13);s+=`<g transform="translate(${dx} ${dy})"><ellipse class="at" rx="${rx}" ry="17"/><text text-anchor="middle" y="4" ${pk?'style="text-decoration:underline;font-weight:700"':''}>${n}</text></g>`});
+if(showA)o.a.forEach(([n,dx,dy,pk])=>{const rx=Math.max(34,n.length*3.6+14);s+=`<g transform="translate(${dx} ${dy})"><ellipse class="at" rx="${rx}" ry="17"/><text text-anchor="middle" y="4" ${pk?'style="text-decoration:underline;font-weight:700"':''}>${n}</text></g>`});
 const sh=o.t=='e'?`<rect class="en" x="-62" y="-22" width="124" height="44"/><text text-anchor="middle" y="5" style="font:700 13px system-ui">${lab(k)}</text>`:`<path class="di" d="M0 -30L56 0L0 30L-56 0z"/><text text-anchor="middle" y="4" style="font-weight:700">${lab(k)}</text>`;
-h+=`<g data-n="${k}" class="${k==esel?'sel':''} ${on(k)?'':'dim'}" transform="translate(${o.x} ${o.y})">${sh}${s.replace(/<g transform/g,'<g class="'+(on(k)?'':'')+'" transform')}</g>`}
+h+=`<g data-n="${k}" class="${k==esel?'sel':''} ${on(k)?'':'dim'}" transform="translate(${o.x} ${o.y})">${sh}${s}</g>`}
+LEGS.forEach(([a,b])=>{if(!R||(R.has(a)&&R.has(b)))h+=`<circle class="tk" data-a="${a}" data-b="${b}" r="6" fill="var(--ac)" stroke="#fff" stroke-width="1.5" style="pointer-events:none"/>`});
 $('es').innerHTML=h;einfo()}
 function einfo(){const k=esel;if(!k){$('ei').innerHTML='<span class="mu">Click an entity or relationship. <b>Order</b> ↔ <b>Menu Item</b> is many-to-many, so it is stored as order_items (order_id, item_id, qty).</span>';return}
 const o=ND[k],legs=o.t=='e'?LEGS.filter(l=>l[0]==k||l[1]==k).map(l=>ND[l[0]].t=='d'?l[0]:l[1]):[k];
 $('ei').innerHTML=`<b>${lab(k)}</b> <span class="pill">${o.t=='e'?'Entity':'Relationship'}</span><p style="margin:6px 0">${o.d}</p>`+
 (o.t=='e'?o.a.map(a=>`<span class="pill">${a[3]?'🔑 ':''}${a[0]}</span>`).join('')+'<div style="margin-top:6px">'+[...new Set(legs)].map(d=>`<div><b>${lab(d)}</b> — <span class="mu">${ND[d].d}</span></div>`).join('')+'</div>':ND[k].a.map(a=>`<span class="pill">${a[0]}</span>`).join(''))}
-
 function ereset(){for(const k in HOME){ND[k].x=HOME[k][0];ND[k].y=HOME[k][1]}esel=null;drawE()}
+function tga(){showA=!showA;$('ta').textContent=showA?'Hide attributes':'Show attributes';drawE()}
 let edrag=null;
-function bindE(){const sv=$('es');if(sv.onpointerdown)return;
+function bindE(){const sv=$('es');
 const pt=e=>{const q=sv.createSVGPoint();q.x=e.clientX;q.y=e.clientY;return q.matrixTransform(sv.getScreenCTM().inverse())};
 sv.onpointerdown=e=>{const g=e.target.closest('[data-n]');if(!g)return;const k=g.dataset.n,p=pt(e);edrag={k,ox:p.x-ND[k].x,oy:p.y-ND[k].y,sx:e.clientX,sy:e.clientY,m:false};sv.setPointerCapture(e.pointerId)};
-sv.onpointermove=e=>{if(!edrag)return;if(Math.abs(e.clientX-edrag.sx)+Math.abs(e.clientY-edrag.sy)>4)edrag.m=true;if(!edrag.m)return;const p=pt(e);ND[edrag.k].x=Math.max(60,Math.min(1040,p.x-edrag.ox));ND[edrag.k].y=Math.max(30,Math.min(730,p.y-edrag.oy));drawE()};
+sv.onpointermove=e=>{if(!edrag)return;if(Math.abs(e.clientX-edrag.sx)+Math.abs(e.clientY-edrag.sy)>4)edrag.m=true;if(!edrag.m)return;const p=pt(e);ND[edrag.k].x=Math.max(70,Math.min(1230,p.x-edrag.ox));ND[edrag.k].y=Math.max(30,Math.min(830,p.y-edrag.oy));drawE()};
 sv.onpointerup=()=>{if(edrag&&!edrag.m){esel=esel==edrag.k?null:edrag.k;drawE()}edrag=null}}
-function erHTML(){return `<div class="c"><div class="f"><b>Entity Relationship Diagram</b><span class="mu">Drag any shape · click an entity or relationship to highlight it</span><button onclick="ereset()">↺ Reset layout</button></div>
-<div class="w"><svg id="es" viewBox="0 0 1100 760"></svg></div>
-<div class="f mu" style="margin-top:8px;font-size:12px"><span>▭ Entity</span><span>◇ Relationship</span><span>⬭ Attribute</span><span><u>Underlined</u> = primary key</span><span>═ Total participation</span><span>→ points to the “one” side</span></div></div><div class="c" id="ei"></div>`}
+function erHTML(){return `<div class="c"><div class="f"><b>Entity Relationship Diagram</b><span class="mu">Dots show how data flows between entities · drag any shape · click to focus one · hover for details</span><button onclick="ereset()">↺ Reset layout</button><button id="ta" onclick="tga()">Hide attributes</button>${ZB}</div>
+<div class="w"><svg id="es" viewBox="0 0 1300 860"></svg></div>
+<div class="f mu" style="margin-top:8px;font-size:12px"><span>▭ Entity</span><span>◇ Relationship</span><span>⬭ Attribute</span><span><u>Underlined</u> = primary key</span><span>═ Total participation</span><span>1 / N / M = cardinality</span><span>→ points to the “one” side</span></div></div><div class="c" id="ei"></div>`}
+function tkLoop(now){document.querySelectorAll('#es .tk').forEach(c=>{const a=c.dataset.a,b=c.dataset.b,p=clip(a,b),q=clip(b,a),u=(now/2200+a.length*.11)%1;c.setAttribute('cx',p[0]+(q[0]-p[0])*u);c.setAttribute('cy',p[1]+(q[1]-p[1])*u)});requestAnimationFrame(tkLoop)}requestAnimationFrame(tkLoop);
 go('bpmn');
 </script></body></html>
